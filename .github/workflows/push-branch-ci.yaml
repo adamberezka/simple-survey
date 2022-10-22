@@ -15,9 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: move to backend dir
-        run: cd backend/simple-survey
-      - run: ls -la
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -25,10 +22,13 @@ jobs:
           cache: 'npm'
           cache-dependency-path: backend/simple-survey/package-lock.json
       - name: npm ci
+        working-directory: backend/simple-survey
         run: npm ci
       - name: npm build
+        working-directory: backend/simple-survey
         run: npm build
       - name: test
+        working-directory: backend/simple-survey
         run: npm test
 
 
@@ -41,8 +41,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: move to backend dir
-        run: cd frontend/simple-survey
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -50,8 +48,11 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/simple-survey/package-lock.json
       - name: npm ci
+        working-directory: frontend/simple-survey
         run: npm ci
       - name: npm build
+        working-directory: frontend/simple-survey
         run: npm build
       - name: test
+        working-directory: frontend/simple-survey
         run: npm test
