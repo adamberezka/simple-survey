@@ -1,0 +1,87 @@
+on:
+  push:
+    tags:
+      - '*'
+      
+jobs:
+
+
+  build-backend:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: backend/simple-survey/package-lock.json
+      - name: npm ci
+        working-directory: backend/simple-survey
+        run: npm ci
+      - name: npm build
+        working-directory: backend/simple-survey
+        run: npm run build --if-present
+      - name: test
+        working-directory: backend/simple-survey
+        run: npm test
+
+
+  build-frontend:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: frontend/simple-survey/package-lock.json
+      - name: npm ci
+        working-directory: frontend/simple-survey
+        run: npm ci
+      - name: npm build
+        working-directory: frontend/simple-survey
+        run: npm run build --if-present
+      - name: test
+        working-directory: frontend/simple-survey
+        run: npm test
+        
+  deploy-frontend:
+    needs: [ build-frontend, build-backend]
+    
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "simple-survey-web-app" #Must be unique in Heroku
+          heroku_email: "adam.berezka99@gmail.com"
+          usedocker: true
+          appdir: frontend/simple-survey/
+    
+  deploy-backend:
+    needs: [ build-frontend, build-backend]
+    
+    runs-on: ubuntu-latest
+        
+    steps:
+      - uses: actions/checkout@v3
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "simple-survey-backend" #Must be unique in Heroku
+          heroku_email: "adam.berezka99@gmail.com"
+          usedocker: true
+          appdir: backend/simple-survey/
