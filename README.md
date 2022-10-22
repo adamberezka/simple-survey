@@ -1,4 +1,4 @@
-
+![my badge](https://badgen.net/badge/react-version/18.2.0/cyan?icon=atom)
 
 # simple-survey
 
