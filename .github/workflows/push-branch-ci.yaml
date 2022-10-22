@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: backend/simple-survey/package-lock.json
+          cache-dependency-path: /backend/simple-survey/package-lock.json
       - name: npm ci
         run: npm ci
       - name: npm build
@@ -43,7 +43,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          cache-dependency-path: frontend/simple-survey/package-lock.json
+          cache-dependency-path: /frontend/simple-survey/package-lock.json
       - name: npm ci
         run: npm ci
       - name: npm build
