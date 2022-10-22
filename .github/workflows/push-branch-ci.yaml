@@ -15,7 +15,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: ls -la backend/simple-survey
+      - name: move to backend dir
+        run: cd backend/simple-survey
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -39,6 +40,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: move to backend dir
+        run: cd frontend/simple-survey
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
