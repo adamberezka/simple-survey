@@ -8,6 +8,4 @@ RUN npm install
 # Copy the source files into the image
 COPY . .
 
-EXPOSE 4000
-
-CMD npm run start:dev
+CMD ["npm", "run", "start:dev"]
