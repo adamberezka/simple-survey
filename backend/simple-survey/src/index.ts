@@ -1,12 +1,19 @@
-import router from "./routes";
-
 const express = require('express');
 const dotenv = require('dotenv');
-
 dotenv.config();
+
+import router from "./routes";
+import "reflect-metadata";
+import { AppDataSource } from "./data-source";
 
 const app = express();
 const port = process.env.PORT || 8080;
+
+AppDataSource.initialize()
+    .then(() => {
+        console.log("[database]: Database has been initialized");
+    })
+    .catch((error) => console.log(error))
 
 /** Logging */
 // app.use(morgan('dev'));
