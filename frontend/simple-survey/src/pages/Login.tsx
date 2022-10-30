@@ -45,18 +45,18 @@ const Login: React.FC = () => {
 							<label className="font-normal text-base text-light-gray">Password</label>
 							<input className="outline outline-1 outline-light-gray rounded-2xl h-14 px-4 py-4" id="password" type="password" placeholder="**************"></input>
 							<div className="flex flex-row justify-end">
-								<a className="text-right text-light-gray cursor-pointer hover:underline mt-2">
+								<p className="text-right text-light-gray cursor-pointer hover:underline mt-2">
 									Forgot password?
-								</a>
+								</p>
 							</div>
 						</div>
 					</form>
 				</div>
 
-				<Button className="bg-primary text-body-text h-[56px] font-semibold text-xl" onClick={() => console.log('guwno')}>
+				<Button className="bg-primary text-body-text h-[56px] font-semibold text-xl" onClick={() => console.log('clicked login')}>
 					Sign In
 				</Button>
-				<Button className="bg-secondary text-body-text h-[56px] font-semibold text-xl" onClick={() => console.log('guwno2')}>
+				<Button className="bg-secondary text-body-text h-[56px] font-semibold text-xl" onClick={() => console.log('clicked create account')}>
 					Create New Account
 				</Button>
 
