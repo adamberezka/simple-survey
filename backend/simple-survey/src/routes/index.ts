@@ -3,7 +3,9 @@ import usersRouter from './users';
 
 // Init router and path
 const router = Router();
+
 // Add sub-routes
-router.use('/users', usersRouter);
+router.use('/user', usersRouter);
+
 // Export the base-router
 export default router;
