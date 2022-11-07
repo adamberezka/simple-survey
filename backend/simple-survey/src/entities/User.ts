@@ -14,11 +14,11 @@ export class User extends BaseEntity {
     this.role = role;
   }
 
-  @PrimaryGeneratedColumn({ type: 'int' })
-  id!: number
+  @PrimaryGeneratedColumn()
+  id!: number;
 
   @Column()
-  email: string
+  email: string;
 
   @Column({ type: "enum", enum: UserRole, default: UserRole.USER })
   role: UserRole;
