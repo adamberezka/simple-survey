@@ -1,4 +1,5 @@
 const express = require('express');
+const cookies = require('cookie-parser');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -14,6 +15,9 @@ AppDataSource.initialize()
         console.log("[database]: Database has been initialized");
     })
     .catch((error) => console.log(error))
+
+/** Take care of cookies */
+app.use(cookies());
 
 /** Logging */
 // app.use(morgan('dev'));
