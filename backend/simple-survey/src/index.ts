@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const cookies = require('cookie-parser');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -18,6 +19,7 @@ AppDataSource.initialize()
 
 /** Take care of cookies */
 app.use(cookies());
+app.use(cors());
 
 /** Logging */
 // app.use(morgan('dev'));
