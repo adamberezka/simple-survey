@@ -89,4 +89,4 @@ const getSurvey = async (req: Request, res: Response) => {
 //   }
 // }
 
-export { createSurvey };
+export { createSurvey, getSurvey };

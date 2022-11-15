@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const NodeCache = require('node-cache');
 const cookies = require('cookie-parser');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -10,6 +11,8 @@ import { AppDataSource } from "./data-source";
 
 const app = express();
 const port = process.env.PORT || 8080;
+
+export const appCache = NodeCache(); 
 
 AppDataSource.initialize()
     .then(() => {

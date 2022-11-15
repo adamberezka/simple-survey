@@ -1,5 +1,6 @@
 import axios from "axios";
 import { NextFunction, Request, Response } from "express";
+import { appCache } from "..";
 
 const jwt = require('jsonwebtoken');
 
@@ -10,14 +11,19 @@ const client = jwksClient({
 });
 
 const getKey = (header: any, callback: Function) => {
-  client.getSigningKey(header.kid, (err: Error, key: any) => {
-    if (err) {
-      console.log(err.message);
-    } else {
-      const signingKey = key.publicKey || key.rsaPublicKey;
-      callback(null, signingKey);
-    }
-  });
+  if (appCache.has('googlePublicKey')) {
+    callback(null, appCache.get('googlePublicKey'));
+  } else {
+    client.getSigningKey(header.kid, (err: Error, key: any) => {
+      if (err) {
+        console.log(err.message);
+      } else {
+        const signingKey = key.publicKey || key.rsaPublicKey;
+        appCache.set('googlePublicKey', signingKey);
+        callback(null, signingKey);
+      }
+    });
+  }
 }
 
 const requierAuth = async (req: Request, res: Response, next: NextFunction) => {
@@ -29,8 +35,15 @@ const requierAuth = async (req: Request, res: Response, next: NextFunction) => {
     if (token) {
       jwt.verify(token, getKey, { algorithms: ['RS256'] }, (err: Error, _decodedToken: Object) => {
         if (err) {
-          console.log("Verify error ->", err.message);
-          res.status(401);
+          appCache.set('googlePublicKey', null);
+          jwt.verify(token, getKey, { algorithms: ['RS256'] }, (err: Error, _decodedToken: Object) => {
+            if (err) {
+              console.log("Verify error ->", err.message);
+              res.status(401);
+            } else {
+              next();
+            }
+          })
         } else {
           next();
         }
