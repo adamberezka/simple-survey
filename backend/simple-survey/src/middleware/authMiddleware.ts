@@ -1,4 +1,3 @@
-import axios from "axios";
 import { NextFunction, Request, Response } from "express";
 import { appCache } from "..";
 
@@ -11,7 +10,7 @@ const client = jwksClient({
 });
 
 const getKey = (header: any, callback: Function) => {
-  if (appCache.has('googlePublicKey')) {
+  if (!!appCache.get('googlePublicKey')) {
     callback(null, appCache.get('googlePublicKey'));
   } else {
     client.getSigningKey(header.kid, (err: Error, key: any) => {
