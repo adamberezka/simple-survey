@@ -12,6 +12,7 @@ export interface RequestPossibleAnswers {
 
 export interface RequestQuestion {
   content: string;
+  type: QuestionType;
   possibleAnswers: RequestPossibleAnswers[]
 }
 
@@ -20,4 +21,10 @@ export interface SurveyRequestBody {
   title: string;
   description: string;
   questions: RequestQuestion[];
+}
+
+export enum QuestionType {
+  CHECKBOX = 'checkbox',
+  RADIO = 'radio',
+  OPEN = 'open'
 }

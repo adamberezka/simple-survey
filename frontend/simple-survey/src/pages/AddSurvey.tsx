@@ -2,22 +2,18 @@ import React, { useState } from "react"
 import Container from "../components/Container";
 import OpenQuestion from "../components/OpenQuestion";
 import Sidebar from "../components/Sidebar";
-import { RequestQuestion } from "../types/Types";
+import { QuestionType, RequestQuestion } from "../types/Types";
 
 const AddSurvey: React.FC = () => {
 
-  const [questions, setQuestionList] = useState([]);
+  const [questions, setQuestionList] = useState<RequestQuestion[]>([]);
 
   const addQuestion = () => {
-    setQuestionList(questions.concat())
-  }
-
-  const mapQuestions = (questions : RequestQuestion[]) => {
-    questions.map((question) => {
-      switch(question.type) {
-        <OpenQuestion></OpenQuestion>
-      }
-    })
+    setQuestionList([...questions, {
+      content: "",
+      type: QuestionType.OPEN,
+      possibleAnswers: []
+    }])
   }
 
   return (
@@ -36,9 +32,14 @@ const AddSurvey: React.FC = () => {
           </div>
         </div>
         <div className="flex content-evenly">
-          
-          <div onClick={addQuestion}>
+          <div>
+            {questions.map((question) => 
+              <OpenQuestion title="XDXDXDXDXDXD"></OpenQuestion>
+            )}
+          </div>
 
+          <div onClick={() => addQuestion()}>
+            +
           </div>
         </div>
       </div>

@@ -1,17 +1,18 @@
 import React from 'react';
 
 interface QuestionProps {
-  className?: string,
   children?: React.ReactNode,
-  username?: string,
-  email?: string,
-  imgUrl?: string
+  title?: string
 }
 
-const Question: React.FC<QuestionProps>= () => {
+const Question: React.FC<QuestionProps>= ({
+  title,
+  children
+}) => {
   return (
     <>
-      
+      {title}
+      {children}
     </>
   );
 };

@@ -1,9 +1,11 @@
-interface QuestionProps {
+import Question from "./Question";
+
+interface OpenQuestionProps {
   title: string,
-  
+
 }
 
-const Question: React.FC<QuestionProps>= ({
+const OpenQuestion: React.FC<OpenQuestionProps>= ({
   title,
 }) => {
   return (
@@ -13,4 +15,4 @@ const Question: React.FC<QuestionProps>= ({
   );
 };
 
-export default Question;
+export default OpenQuestion;
