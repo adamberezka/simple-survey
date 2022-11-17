@@ -1,15 +1,14 @@
 import { FocusEventHandler } from "react";
 import Question from "./Question";
-import TextArea from "./TextArea";
 
-interface OpenQuestionProps {
+interface RadioButtonQuestionProps {
   title: string,
   deleteQuestion: () => void,
   onBlur: FocusEventHandler<HTMLTextAreaElement>,
   content: string
 }
 
-const OpenQuestion: React.FC<OpenQuestionProps>= ({
+const RadioButtonQuestion: React.FC<RadioButtonQuestionProps>= ({
   title,
   deleteQuestion,
   onBlur,
@@ -21,4 +20,4 @@ const OpenQuestion: React.FC<OpenQuestionProps>= ({
   );
 };
 
-export default OpenQuestion;
+export default RadioButtonQuestion;

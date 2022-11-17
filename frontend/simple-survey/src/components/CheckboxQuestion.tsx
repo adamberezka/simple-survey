@@ -1,19 +1,18 @@
 import { FocusEventHandler } from "react";
 import Question from "./Question";
-import TextArea from "./TextArea";
 
-interface OpenQuestionProps {
+interface CheckboxQuestionProps {
   title: string,
   deleteQuestion: () => void,
   onBlur: FocusEventHandler<HTMLTextAreaElement>,
   content: string
 }
 
-const OpenQuestion: React.FC<OpenQuestionProps>= ({
+const CheckBoxQuestion: React.FC<CheckboxQuestionProps>= ({
   title,
   deleteQuestion,
-  onBlur,
-  content
+  content,
+  onBlur
 }) => {
   return (
     <Question onBlur={onBlur} content={content} deleteQuestion={deleteQuestion} title={title}>
@@ -21,4 +20,4 @@ const OpenQuestion: React.FC<OpenQuestionProps>= ({
   );
 };
 
-export default OpenQuestion;
+export default CheckBoxQuestion;

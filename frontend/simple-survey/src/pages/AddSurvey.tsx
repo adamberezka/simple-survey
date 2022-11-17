@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { FocusEvent, useState } from "react"
 import Container from "../components/Container";
 import OpenQuestion from "../components/OpenQuestion";
 import Sidebar from "../components/Sidebar";
@@ -8,12 +8,22 @@ const AddSurvey: React.FC = () => {
 
   const [questions, setQuestionList] = useState<RequestQuestion[]>([]);
 
-  const addQuestion = () => {
+  const addQuestion = (type: QuestionType) => {
     setQuestionList([...questions, {
       content: "",
-      type: QuestionType.OPEN,
+      type: type,
       possibleAnswers: []
     }])
+  }
+  
+  const deleteQuestion = (index: number) => {
+    questions.splice(index, 1);
+    setQuestionList([...questions]);
+  }
+
+  const setContent = (index: number, content: string) => {
+      console.log("OnBlur: " + content);
+      questions[index].content = content;
   }
 
   return (
@@ -22,7 +32,7 @@ const AddSurvey: React.FC = () => {
 
       </Sidebar>
       
-      <div className="h-[90%] w-[90%] m-10 py-6 px-12 shadow-lg border-0 border-[#bbbbbb] bg-white rounded-2xl">
+      <div className="h-[90%] w-[90%] m-10 py-6 px-12 shadow-lg border-0 border-[#bbbbbb] bg-white rounded-2xl overflow-y-scroll">
         <div className="mb-6">
           <div className="text-4xl font-bold mb-2">
             Title
@@ -31,15 +41,24 @@ const AddSurvey: React.FC = () => {
             Description
           </div>
         </div>
-        <div className="flex content-evenly">
-          <div>
-            {questions.map((question) => 
-              <OpenQuestion title="XDXDXDXDXDXD"></OpenQuestion>
+        <div>
+          <div className="flex flex-col w-full gap-y-4">
+            {questions.map((question, index) => 
+              <OpenQuestion onBlur={(e: FocusEvent<HTMLTextAreaElement>) => setContent(index, e.target.value)} content={question.content} deleteQuestion={() => deleteQuestion(index)} title={question.type}></OpenQuestion>
             )}
           </div>
+          <div className="w-full flex flex-row justify-center">
+            <div className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#20f63d] rounded-2xl text-center w-60 h-8" onClick={() => addQuestion(QuestionType.OPEN)}>
+              + Add Open Question
+            </div>
 
-          <div onClick={() => addQuestion()}>
-            +
+            <div className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#20f63d] rounded-2xl text-center w-60 h-8" onClick={() => addQuestion(QuestionType.CHECKBOX)}>
+              + Add Checkbox Question
+            </div>
+
+            <div className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#20f63d] rounded-2xl text-center w-60 h-8" onClick={() => addQuestion(QuestionType.RADIO)}>
+              + Add Radio Button Question
+            </div>
           </div>
         </div>
       </div>
