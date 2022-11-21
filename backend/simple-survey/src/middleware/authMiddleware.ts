@@ -25,7 +25,7 @@ const getKey = (header: any, callback: Function) => {
   }
 }
 
-const requierAuth = async (req: Request, res: Response, next: NextFunction) => {
+const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
   console.log("New request: ", req.baseUrl + req.url);
 
   try {
@@ -57,4 +57,4 @@ const requierAuth = async (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-export default requierAuth;
+export default requireAuth;

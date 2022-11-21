@@ -12,7 +12,7 @@ import { AppDataSource } from "./data-source";
 const app = express();
 const port = process.env.PORT || 8080;
 
-export const appCache = NodeCache(); 
+export const appCache = new NodeCache(); 
 
 AppDataSource.initialize()
     .then(() => {

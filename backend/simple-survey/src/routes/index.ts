@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import requierAuth from '../middleware/authMiddleware';
+import requireAuth from '../middleware/authMiddleware';
 import surveyRouter from './surveys';
 import usersRouter from './users';
 
@@ -7,8 +7,8 @@ import usersRouter from './users';
 const router = Router();
 
 // Add sub-routes
-router.use('/user', requierAuth, usersRouter);
-router.use('/surveys', surveyRouter);
+router.use('/user', requireAuth, usersRouter);
+router.use('/surveys', requireAuth, surveyRouter);
 
 // Export the base-router
 export default router;
