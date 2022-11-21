@@ -8,7 +8,8 @@ module.exports = {
       'primary': '#3E0070',
       'secondary': '#BC79B6',
       'body-text': '#F9F6FC',
-      'light-gray': '#6C757D'
+      'light-gray': '#6C757D',
+      'white': '#FFFFFF'
     },
     extend: {},
   },
