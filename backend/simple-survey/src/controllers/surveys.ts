@@ -50,6 +50,16 @@ const createSurvey = async (req: Request, res: Response) => {
   }
 }
 
+const getUserSurveys = async (req: Request, res: Response) => {
+  try {
+    const surveys: Survey[] = await surveyRepository.findBy({ownerId: req.body.userId});
+
+    return res.status(200).json({surveys});
+  } catch (error) {
+    return res.status(500).json({error})
+  }
+}
+
 const getSurvey = async (req: Request, res: Response) => {
   try {
     const survey = await surveyRepository.findOneBy({ id: req.body.surveyId });
@@ -89,4 +99,4 @@ const getSurvey = async (req: Request, res: Response) => {
 //   }
 // }
 
-export { createSurvey, getSurvey };
+export { createSurvey, getUserSurveys, getSurvey };
