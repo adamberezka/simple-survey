@@ -20,7 +20,7 @@ const PossibleAnswer: React.FC<PossibleAnswerProps> = ({
 
   return (
     <div className="w-full relative flex gap-x-2 items-center">
-      <div className="flex justify-center items-center text-white absolute -top-2 -right-2 h-6 w-6 bg-[#FF0000] rounded-full cursor-pointer" onClick={deleteAnswer}>
+      <div className="flex justify-center items-center text-white absolute -top-2 -right-2 h-6 w-6 bg-[#f03232] rounded-full cursor-pointer" onClick={deleteAnswer}>
         <div className="font-bold">
           X
         </div>

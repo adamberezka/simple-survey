@@ -9,4 +9,4 @@ const surveyUrl = hostUrl + "/survey";
 
 
 export const loginUser = (jwt: string ) => axios.post(loginUrl, {jwt: jwt});
-export const createSurvey = (survey: SurveyRequestBody) => axios.post(surveyUrl, survey)
+export const createSurvey = (survey: SurveyRequestBody) => axios.post(surveyUrl, survey);

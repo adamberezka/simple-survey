@@ -1,3 +1,8 @@
+
+export interface ReduxState {
+  user: User
+}
+
 export interface User {
   jwt: string,
   email: string,

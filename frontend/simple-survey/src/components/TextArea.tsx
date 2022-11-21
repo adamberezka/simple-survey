@@ -9,7 +9,8 @@ interface TextAreaProps {
   onChange: (e: any) => void,
   onFocus?: () => void,
   onBlur?: FocusEventHandler<HTMLTextAreaElement>,
-  className?: string
+  className?: string,
+  inputClassName?: string,
 }
 
 const TextArea: React.FC<TextAreaProps> = ({
@@ -20,7 +21,8 @@ const TextArea: React.FC<TextAreaProps> = ({
   onChange,
   onFocus,
   onBlur,
-  className
+  className,
+  inputClassName
 }) => {
   return (
     <div className={`w-full ${className}`}>
@@ -31,7 +33,7 @@ const TextArea: React.FC<TextAreaProps> = ({
         value={value}
         defaultValue={""}
         spellCheck={false}
-        className="w-full resize-none rounded-2xl p-2 border border-[#d7d7d7]"
+        className={`w-full resize-none rounded-2xl p-2 border border-[#d7d7d7] ${inputClassName}`}
         onFocus={onFocus}
         onBlur={onBlur}
       />

@@ -1,10 +1,14 @@
 import React, { FocusEvent, useState } from "react"
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import CheckBoxQuestion from "../components/CheckboxQuestion";
 import Container from "../components/Container";
 import OpenQuestion from "../components/OpenQuestion";
 import RadioButtonQuestion from "../components/RadioButtonQuestion";
 import Sidebar from "../components/Sidebar";
-import { QuestionType, RequestQuestion } from "../types/Types";
+import TextArea from "../components/TextArea";
+import { createSurvey } from "../services/BackendService";
+import { QuestionType, ReduxState, RequestQuestion } from "../types/Types";
 
 const addQuestion = (type: QuestionType, setQuestionList: Function, questions: RequestQuestion[]) => {
   setQuestionList([...questions, {
@@ -43,8 +47,35 @@ const updateAnswer = (index: number, setQuestionList: Function, questions: Reque
   setQuestionList([ ...newQuestions ]);
 }
 
+const isSurveyValid = (questions: RequestQuestion[]) => {
+  if (!!questions.find(question => !question.content.length))
+    return false;
+
+  if (questions.some(question => question.type !== QuestionType.OPEN && !question.possibleAnswers.length))
+    return false;
+
+  if (questions.some(question => question.possibleAnswers.some(answer => !answer.content.length)))
+    return false;
+
+  return true;
+}
+
 const AddSurvey: React.FC = () => {
   const [questions, setQuestionList] = useState<RequestQuestion[]>([]);
+  const [title, setTitle] = useState<string>("Survey title");
+  const [description, setDescription] = useState<string>("Survey description");
+  const ownerId = useSelector<ReduxState, number>(state => state.user?.id);
+  const navigate = useNavigate();
+
+  const surveyValid = isSurveyValid(questions);
+  
+  const handleSubmit = () => {
+    createSurvey({ownerId, title, description, questions})
+      .then(res => {
+        navigate("/surveys");
+      })
+      .catch(err => console.log(err));
+  }
 
   return (
     <Container className="bg-body-text w-screen h-screen">
@@ -52,12 +83,18 @@ const AddSurvey: React.FC = () => {
       
       <div className="h-[90%] w-[90%] m-10 py-6 px-12 shadow-lg border-0 border-[#bbbbbb] bg-white rounded-2xl overflow-y-scroll">
         <div className="mb-6">
-          <div className="text-4xl font-bold mb-2">
-            Title
-          </div>
-          <div className="text-xl font-normal">
-            Description
-          </div>
+          <TextArea 
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Survey title"
+            inputClassName="text-4xl font-bold mb-2 outline-none border-0"
+          />
+          <TextArea 
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Survey description"
+            inputClassName="text-xl font-normal mb-2 outline-none border-0"
+          />
         </div>
         <div>
           <div className="flex flex-col w-full gap-y-4">
@@ -98,19 +135,41 @@ const AddSurvey: React.FC = () => {
             )}
           </div>
           <div className="w-full flex flex-row justify-center mt-4">
-            <div className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#1cf038] rounded-2xl text-center w-60 h-8 font-semibold" onClick={() => addQuestion(QuestionType.OPEN, setQuestionList, questions)}>
+            <div 
+              className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#25ea3f] rounded-2xl text-center w-60 h-8 font-semibold" 
+              onClick={() => addQuestion(QuestionType.OPEN, setQuestionList, questions)}
+            >
               + Add Open Question
             </div>
 
-            <div className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#1cf038] rounded-2xl text-center w-60 h-8 font-semibold" onClick={() => addQuestion(QuestionType.CHECKBOX, setQuestionList, questions)}>
+            <div 
+              className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#25ea3f] rounded-2xl text-center w-60 h-8 font-semibold" 
+              onClick={() => addQuestion(QuestionType.CHECKBOX, setQuestionList, questions)}
+            >
               + Add Checkbox Question
             </div>
 
-            <div className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#1cf038] rounded-2xl text-center w-60 h-8 font-semibold" onClick={() => addQuestion(QuestionType.RADIO, setQuestionList, questions)}>
+            <div 
+              className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#25ea3f] rounded-2xl text-center w-60 h-8 font-semibold" 
+              onClick={() => addQuestion(QuestionType.RADIO, setQuestionList, questions)}
+            >
               + Add Radio Button Question
             </div>
           </div>
         </div>
+        
+        {!!questions.length && 
+        <div className="flex justify-center items-center mt-4"> 
+          <div className={surveyValid ? "cursor-pointer" : "cursor-not-allowed"}>
+            <div 
+              className={`text-xl flex-grow-0 rounded-2xl bg-primary text-white px-12 py-2 select-none ${!surveyValid && "pointer-events-none"}`} 
+              onClick={() => handleSubmit()}
+            >
+              Submit survey
+            </div>
+          </div>
+        </div>
+        }
       </div>
 
     </Container>
