@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import Sidebar from "../components/Sidebar";
 import SurveyMinature from "../components/SurveyMinature";
@@ -17,6 +18,7 @@ interface Survey {
 
 const Surveys: React.FC = () => {
   const [userSurveys, setUserSurveys] = useState<Survey[]>([]);
+  const navigate = useNavigate();
   const user = useSelector((state: ReduxState) => state.user);
 
   useEffect(() => {
@@ -44,7 +46,8 @@ const Surveys: React.FC = () => {
         </div>
         <div className="flex gap-x-4">
           {userSurveys.map(survey => 
-            <SurveyMinature title={survey.title} description={survey.description} closeDate={survey.closeDate}/>  
+            // TODO: proper navigate
+            <SurveyMinature title={survey.title} description={survey.description} closeDate={survey.closeDate} onClick={() => navigate("/surveys")}/>  
           )}
         </div>
       </div>
