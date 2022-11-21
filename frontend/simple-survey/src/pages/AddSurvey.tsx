@@ -64,14 +64,14 @@ const AddSurvey: React.FC = () => {
   const [questions, setQuestionList] = useState<RequestQuestion[]>([]);
   const [title, setTitle] = useState<string>("Survey title");
   const [description, setDescription] = useState<string>("Survey description");
-  const ownerId = useSelector<ReduxState, number>(state => state.user?.id);
+  const {ownerId, jwt} = useSelector<ReduxState, {ownerId: number, jwt: string}>(state => ({ownerId: state.user?.id, jwt: state.user?.jwt}));
   const navigate = useNavigate();
 
   const surveyValid = isSurveyValid(questions);
   
   const handleSubmit = () => {
-    createSurvey({ownerId, title, description, questions})
-      .then(res => {
+    createSurvey({ownerId, title, description, questions}, jwt)
+      .then(_res => {
         navigate("/surveys");
       })
       .catch(err => console.log(err));

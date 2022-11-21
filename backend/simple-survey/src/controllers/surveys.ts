@@ -27,7 +27,7 @@ interface SurveyRequestBody {
 
 const createSurvey = async (req: Request, res: Response) => {
   try {
-    const surveyData: SurveyRequestBody = req.body;
+    const surveyData: SurveyRequestBody = req.body.survey;
   
     const newSurvey = new Survey(surveyData.ownerId, surveyData.title, surveyData.description, true);
     await newSurvey.save();
