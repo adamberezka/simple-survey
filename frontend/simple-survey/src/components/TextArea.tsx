@@ -6,7 +6,7 @@ interface TextAreaProps {
   value?: string,
   disabled?: boolean,
   label?: string,
-  onChange?: () => void,
+  onChange: (e: any) => void,
   onFocus?: () => void,
   onBlur?: FocusEventHandler<HTMLTextAreaElement>,
   className?: string
@@ -27,8 +27,8 @@ const TextArea: React.FC<TextAreaProps> = ({
       <div>{label}</div>
       <TextareaAutosize  
         placeholder={placeholder}
-        onChange={onChange}
-        // value={value}
+        onChange={(e) => onChange(e)}
+        value={value}
         defaultValue={""}
         spellCheck={false}
         className="w-full resize-none rounded-2xl p-2 border border-[#d7d7d7]"

@@ -26,6 +26,12 @@ const AddSurvey: React.FC = () => {
       questions[index].content = content;
   }
 
+  const updateQuestion = (index: number) => (value: string) => {
+    let newQuestions = questions;
+    newQuestions[index].content = value;
+    setQuestionList([ ...newQuestions ]);
+  }
+
   return (
     <Container className="bg-body-text w-screen h-screen">
       <Sidebar>
@@ -44,19 +50,24 @@ const AddSurvey: React.FC = () => {
         <div>
           <div className="flex flex-col w-full gap-y-4">
             {questions.map((question, index) => 
-              <OpenQuestion onBlur={(e: FocusEvent<HTMLTextAreaElement>) => setContent(index, e.target.value)} content={question.content} deleteQuestion={() => deleteQuestion(index)} title={question.type}></OpenQuestion>
+              <OpenQuestion 
+                onBlur={(e: FocusEvent<HTMLTextAreaElement>) => setContent(index, e.target.value)} 
+                content={question.content} deleteQuestion={() => deleteQuestion(index)} 
+                title={question.type}
+                updateQuestion={updateQuestion(index)}
+              />
             )}
           </div>
           <div className="w-full flex flex-row justify-center">
-            <div className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#20f63d] rounded-2xl text-center w-60 h-8" onClick={() => addQuestion(QuestionType.OPEN)}>
+            <div className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#1cf038] rounded-2xl text-center w-60 h-8 font-semibold" onClick={() => addQuestion(QuestionType.OPEN)}>
               + Add Open Question
             </div>
 
-            <div className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#20f63d] rounded-2xl text-center w-60 h-8" onClick={() => addQuestion(QuestionType.CHECKBOX)}>
+            <div className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#1cf038] rounded-2xl text-center w-60 h-8 font-semibold" onClick={() => addQuestion(QuestionType.CHECKBOX)}>
               + Add Checkbox Question
             </div>
 
-            <div className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#20f63d] rounded-2xl text-center w-60 h-8" onClick={() => addQuestion(QuestionType.RADIO)}>
+            <div className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#1cf038] rounded-2xl text-center w-60 h-8 font-semibold" onClick={() => addQuestion(QuestionType.RADIO)}>
               + Add Radio Button Question
             </div>
           </div>
