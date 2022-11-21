@@ -5,22 +5,29 @@ import TextArea from "./TextArea";
 
 interface OpenQuestionProps {
   title: string,
+  index: number,
   deleteQuestion: () => void,
   updateQuestion: (value: string) => void,
-  onBlur: FocusEventHandler<HTMLTextAreaElement>,
   content: string
 }
 
 const OpenQuestion: React.FC<OpenQuestionProps> = ({
   title,
+  index,
   deleteQuestion,
   updateQuestion,
-  onBlur,
   content
 }) => {
   return (
-    <Question onBlur={onBlur} content={content} deleteQuestion={deleteQuestion} title={title} updateQuestion={updateQuestion}>
-    </Question>
+    <div className="w-full rounded-2xl border p-4 border-[#d6d6d6] relative">
+      <div className="flex justify-center items-center text-white absolute -top-2 -right-2 h-6 w-6 bg-[#FF0000] rounded-full cursor-pointer" onClick={deleteQuestion}>
+        <div className="font-bold">
+          X
+        </div>
+      </div>
+      <div className="text-lg font-semibold mb-4 ml-1">{`${index + 1} - ${title} question`}</div>
+      <Question  content={content} updateQuestion={updateQuestion} />
+    </div>
   );
 };
 
