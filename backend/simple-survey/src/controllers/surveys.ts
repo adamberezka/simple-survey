@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { Survey } from "../entities/Survey";
 import { Question, QuestionType } from "../entities/Question";
 import { PossibleAnswer } from "../entities/PossibleAnswer";
+import { decryptSurveyId, encryptSurveyId } from "../utils/encryptionUtils";
 
 const surveyRepository = AppDataSource.getRepository(Survey);
 const questionRepository = AppDataSource.getRepository(Question);
@@ -52,7 +53,12 @@ const createSurvey = async (req: Request, res: Response) => {
 
 const getUserSurveys = async (req: Request, res: Response) => {
   try {
-    const surveys: Survey[] = await surveyRepository.findBy({ownerId: req.body.userId});
+    let savedSurveys: Survey[] = await surveyRepository.findBy({ownerId: req.body.userId});
+
+    const surveys = savedSurveys.map((survey: Survey) => {
+      const surveyHash: {iv: string, content: string} = encryptSurveyId(survey.id);
+      return { ...survey, hash: `${surveyHash.iv}_${surveyHash.content}` }
+    });
 
     return res.status(200).json({surveys});
   } catch (error) {
@@ -62,9 +68,12 @@ const getUserSurveys = async (req: Request, res: Response) => {
 
 const getSurvey = async (req: Request, res: Response) => {
   try {
-    const survey = await surveyRepository.findOneBy({ id: req.body.surveyId });
+    const hash = req.body.hash.split("_");
+    const surveyId = decryptSurveyId({iv: hash[0], content: hash[1]});
+
+    const survey = await surveyRepository.findOneBy({ id: surveyId });
     const questions = await questionRepository.findBy({ surveyId: survey!.id });
-    
+
     const retQuestions = await Promise.all(questions.map(async (question: Question) => {
       const answers = await answerRepository.findBy({ questionId: question.id });
       return {

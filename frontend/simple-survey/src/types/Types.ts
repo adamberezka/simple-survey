@@ -33,3 +33,17 @@ export enum QuestionType {
   RADIO = 'radio',
   OPEN = 'open'
 }
+
+export interface SurveyAnswer {
+  surveyId: number;
+  userId: number;
+  answers: QuestionAnswer[];
+}
+
+export interface QuestionAnswer {
+  questionId: number;
+  possibleAnswerId: number;
+  content: string;
+  userId: number;
+  surveyAnswerId: number;
+}
