@@ -12,17 +12,20 @@ export interface User {
 }
 
 export interface RequestPossibleAnswers {
+  id?: number;
   content: string
 }
 
 export interface RequestQuestion {
   content: string;
+  id: number;
   type: QuestionType;
   possibleAnswers: RequestPossibleAnswers[]
 }
 
 export interface SurveyRequestBody {
   ownerId: number;
+  id?: number;
   title: string;
   description: string;
   questions: RequestQuestion[];
@@ -34,16 +37,15 @@ export enum QuestionType {
   OPEN = 'open'
 }
 
-export interface SurveyAnswer {
+export interface SurveyAnswerRequest {
   surveyId: number;
   userId: number;
-  answers: QuestionAnswer[];
+  answers: QuestionAnswerRequest[];
 }
 
-export interface QuestionAnswer {
+export interface QuestionAnswerRequest {
   questionId: number;
-  possibleAnswerId: number;
-  content: string;
+  possibleAnswerId?: number;
+  content: string | QuestionAnswerRequest | QuestionAnswerRequest[]; 
   userId: number;
-  surveyAnswerId: number;
 }

@@ -1,13 +1,17 @@
 import React from "react"
-import { QuestionType, RequestQuestion } from "../types/Types";
+import { QuestionAnswerRequest, QuestionType, RequestQuestion } from "../types/Types";
 import OpenAnswer from "./OpenAnswer";
 
 interface QuestionAnswerProps {
-  question: RequestQuestion
+  question: RequestQuestion;
+  content: string | QuestionAnswerRequest | QuestionAnswerRequest[];
+  updateAnswer: (content: string | QuestionAnswerRequest | QuestionAnswerRequest[]) => void
 }
 
 const QuestionAnswer: React.FC<QuestionAnswerProps> = ({
-  question
+  question,
+  content,
+  updateAnswer
 }) => {
 
 
