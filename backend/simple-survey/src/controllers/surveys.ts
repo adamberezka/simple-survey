@@ -10,10 +10,12 @@ const questionRepository = AppDataSource.getRepository(Question);
 const answerRepository = AppDataSource.getRepository(PossibleAnswer);
 
 interface RequestPossibleAnswers {
+  id: number;
   content: string;
 }
 
 interface RequestQuestion {
+  id: number;
   type: QuestionType;
   content: string;
   possibleAnswers: RequestPossibleAnswers[];
@@ -21,6 +23,7 @@ interface RequestQuestion {
 
 interface SurveyRequestBody {
   ownerId: number;
+  id: number;
   title: string;
   description: string;
   questions: RequestQuestion[];
@@ -77,14 +80,16 @@ const getSurvey = async (req: Request, res: Response) => {
     const retQuestions = await Promise.all(questions.map(async (question: Question) => {
       const answers = await answerRepository.findBy({ questionId: question.id });
       return {
+        id: question.id,
         type: question.type,
         content: question.content,
-        possibleAnswers: answers.map((answer: PossibleAnswer) => ({ content: answer.content }))
+        possibleAnswers: answers.map((answer: PossibleAnswer) => ({ id: answer.id, content: answer.content }))
       };
     }));
 
     let retSurvey: SurveyRequestBody = {
       ownerId: survey?.ownerId!,
+      id: survey?.id!,
       title: survey?.title!,
       description: survey?.description!,
       questions: retQuestions,
