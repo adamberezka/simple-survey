@@ -40,12 +40,11 @@ export enum QuestionType {
 export interface SurveyAnswerRequest {
   surveyId: number;
   userId: number;
-  answers: QuestionAnswerRequest[];
+  answers: Map<number, string | number | number[] | null>;
 }
 
 export interface QuestionAnswerRequest {
-  questionId: number;
-  possibleAnswerId?: number;
-  content: string | QuestionAnswerRequest | QuestionAnswerRequest[]; 
+  type: QuestionType;
+  answer?: string | number | number[];
   userId: number;
 }

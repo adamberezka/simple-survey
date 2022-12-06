@@ -43,7 +43,13 @@ const Surveys: React.FC = () => {
         </div>
         <div className="flex gap-x-4">
           {userSurveys.map(survey => 
-            <SurveyMinature title={survey.title} description={survey.description} closeDate={survey.closeDate} onClick={() => navigate(`/surveys/${survey.hash}`)}/>  
+            <SurveyMinature 
+              key={survey.id}
+              title={survey.title} 
+              description={survey.description} 
+              closeDate={survey.closeDate} 
+              onClick={() => navigate(`/surveys/${survey.hash}`)}
+            />  
           )}
         </div>
       </div>

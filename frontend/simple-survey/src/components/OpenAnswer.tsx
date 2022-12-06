@@ -3,18 +3,23 @@ import TextArea from "./TextArea";
 
 interface OpenAnswerProps {
   value: string;
-  onChange: () => void;
+  onChange: (value: string) => void;
 }
 
 const OpenAnswer: React.FC<OpenAnswerProps> = ({
   value, 
   onChange
 }) => {
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  }
+
   return (
     <div>
       <TextArea 
         value={value}
-        onChange={onChange}
+        onChange={(e) => handleOnChange(e)}
+        placeholder="Your answer"
       />
     </div>
   );  

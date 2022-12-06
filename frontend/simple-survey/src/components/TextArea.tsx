@@ -31,7 +31,6 @@ const TextArea: React.FC<TextAreaProps> = ({
         placeholder={placeholder}
         onChange={(e) => onChange(e)}
         value={value}
-        defaultValue={""}
         spellCheck={false}
         className={`w-full resize-none rounded-2xl p-2 border border-[#d7d7d7] ${inputClassName}`}
         onFocus={onFocus}

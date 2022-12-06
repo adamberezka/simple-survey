@@ -38,6 +38,7 @@ const RadioButtonQuestion: React.FC<RadioButtonQuestionProps>= ({
       <div className="mt-3 pl-2 flex flex-col gap-y-1">
         {answers.map((answer: RequestPossibleAnswers, index: number) => 
           <PossibleAnswer 
+            key={index}
             content={answer.content}
             type="radio"
             deleteAnswer={() => deleteAnswer(index)}
