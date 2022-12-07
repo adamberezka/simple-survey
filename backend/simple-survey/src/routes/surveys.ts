@@ -1,10 +1,11 @@
 import { Router } from 'express';
-import { createSurvey, getSurvey, getUserSurveys } from '../controllers/surveys';
+import { answerSurvey, createSurvey, getSurvey, getUserSurveys } from '../controllers/surveys';
 
 const surveyRouter = Router();
 
 surveyRouter.post('/create', createSurvey);
 surveyRouter.post('/get', getSurvey);
-surveyRouter.post('/get-users', getUserSurveys);
+surveyRouter.post('/user-surveys', getUserSurveys);
+surveyRouter.post('/answer', answerSurvey);
 
 export default surveyRouter;

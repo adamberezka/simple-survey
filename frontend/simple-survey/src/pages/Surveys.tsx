@@ -41,7 +41,7 @@ const Surveys: React.FC = () => {
             Lorem ipsum dolr sit maet
           </div>
         </div>
-        <div className="flex gap-x-4">
+        <div className="flex gap-x-4 gap-y-4 flex-wrap">
           {userSurveys.map(survey => 
             <SurveyMinature 
               key={survey.id}

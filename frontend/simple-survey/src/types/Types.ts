@@ -37,14 +37,20 @@ export enum QuestionType {
   OPEN = 'open'
 }
 
-export interface SurveyAnswerRequest {
+export interface SurveyAnswerData {
   surveyId: number;
   userId: number;
   answers: Map<number, string | number | number[] | null>;
 }
 
-export interface QuestionAnswerRequest {
-  type: QuestionType;
-  answer?: string | number | number[];
+export interface SurveyAnswerRequest {
+  surveyId: number;
   userId: number;
+  jwt: string;
+  answers: QuestionAnswerRequest[]
+}
+export interface QuestionAnswerRequest {
+  questionId: number
+  possibleAnswerId: number | null;
+  content: string | null;
 }
