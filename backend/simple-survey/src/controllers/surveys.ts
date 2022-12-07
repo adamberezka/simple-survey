@@ -4,6 +4,8 @@ import { Survey } from "../entities/Survey";
 import { Question, QuestionType } from "../entities/Question";
 import { PossibleAnswer } from "../entities/PossibleAnswer";
 import { decryptSurveyId, encryptSurveyId } from "../utils/encryptionUtils";
+import { SurveyAnswer } from "../entities/SurveyAnswer";
+import { QuestionAnswer } from "../entities/QuestionAnswer";
 
 const surveyRepository = AppDataSource.getRepository(Survey);
 const questionRepository = AppDataSource.getRepository(Question);
@@ -99,16 +101,22 @@ const getSurvey = async (req: Request, res: Response) => {
   }
 }
 
-// TODO
-// const answerSurvey = async (req: Request, res: Response) => {
-//   try {
-//     const surveyId = req.body.surveyId;
 
+const answerSurvey = async (req: Request, res: Response) => {
+  try {
+    const newSurveyAnswer = new SurveyAnswer(req.body.surveyId, req.body.userId);
+    await newSurveyAnswer.save();
 
+    for await (const answer of req.body.answers) {
+      const newAnswer = new QuestionAnswer(answer.questionId, answer.possibleAnswerId, answer.content, req.body.userId, newSurveyAnswer.id);
 
-//   } catch (error) {
-//     return res.status(500).json({error});
-//   }
-// }
+      await newAnswer.save();
+    }
 
-export { createSurvey, getUserSurveys, getSurvey };
+    return res.status(200).end();
+  } catch (error) {
+    return res.status(500).json({error});
+  }
+}
+
+export { createSurvey, getUserSurveys, getSurvey, answerSurvey };

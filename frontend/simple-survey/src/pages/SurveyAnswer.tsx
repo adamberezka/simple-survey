@@ -1,16 +1,17 @@
 import React, { useEffect, useState, useMemo } from "react"
 import { useSelector } from "react-redux";
-import { useMatch } from "react-router-dom";
+import { useMatch, useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import QuestionAnswer from "../components/QuestionAnswer";
-import { getSurvey } from "../services/BackendService";
-import { QuestionType, ReduxState, RequestQuestion, SurveyAnswerRequest, SurveyRequestBody } from "../types/Types";
+import { answerSurvey, getSurvey } from "../services/BackendService";
+import { QuestionType, ReduxState, RequestQuestion, SurveyAnswerData, SurveyAnswerRequest, SurveyRequestBody } from "../types/Types";
 
 const SurveyAnswer: React.FC = () => {
   const [surveyData, setSurveyData] = useState<SurveyRequestBody>();
-  const [surveyAnswer, setSurveyAnswer] = useState<SurveyAnswerRequest>();
+  const [surveyAnswer, setSurveyAnswer] = useState<SurveyAnswerData>();
   const match = useMatch("/surveys/:hash");
   const user = useSelector((state: ReduxState) => state.user);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getSurvey(match?.params.hash!, user.jwt)
@@ -60,7 +61,69 @@ const SurveyAnswer: React.FC = () => {
   }, [surveyAnswer]);
 
   const handleSubmit = () => {
-    
+    let surveyAnswerData: SurveyAnswerRequest = {
+      surveyId: surveyData?.id!,
+      userId: user.id,
+      jwt: user.jwt,
+      answers: []
+    }
+
+    Array.from(surveyAnswer?.answers.keys()!).forEach(questionId => {
+      let questionAnswer;
+
+      switch (surveyData?.questions.find(question => question.id === questionId)?.type) {
+        case QuestionType.OPEN:
+          
+          questionAnswer = { 
+            questionId: questionId,
+            possibleAnswerId: null,
+            content: surveyAnswer?.answers.get(questionId) as string,
+          }
+
+          surveyAnswerData.answers.push(questionAnswer);
+
+          break;
+
+        case QuestionType.RADIO:
+          
+          questionAnswer = { 
+            questionId: questionId,
+            possibleAnswerId: surveyAnswer?.answers.get(questionId) as number,
+            content: null,
+          }
+
+          surveyAnswerData.answers.push(questionAnswer);
+
+          break;
+
+        case QuestionType.CHECKBOX:
+          
+          const answerIds = surveyAnswer?.answers.get(questionId) as number[];
+
+          answerIds.forEach(answerId => {
+            questionAnswer = { 
+              questionId: questionId,
+              possibleAnswerId: answerId as number,
+              content: null,
+            }
+  
+            surveyAnswerData.answers.push(questionAnswer);
+          })
+
+          break;
+      
+        default:
+          break;
+      }
+
+    });
+
+    answerSurvey(surveyAnswerData)
+      .then(_res => {
+        navigate("/surveys");
+      })
+      .catch(err => console.error(err))
+
   }
 
   return (

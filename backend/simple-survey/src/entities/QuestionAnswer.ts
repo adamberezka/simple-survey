@@ -18,10 +18,10 @@ export class QuestionAnswer extends BaseEntity {
   @Column()
   questionId: number
 
-  @Column()
-  possibleAnswerId: number
+  @Column({ nullable: true })
+  possibleAnswerId: number;
 
-  @Column()
+  @Column({ nullable: true })
   content: string;
 
   @Column()
