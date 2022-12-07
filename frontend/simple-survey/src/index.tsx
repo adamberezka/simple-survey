@@ -9,11 +9,16 @@ import store from './redux/store';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+/**
+ * React.StrictMode removed due to calling rendering components twice on dev server and thus calling API service twice
+ */
+
 root.render(
   <Provider store={store}>
-    <React.StrictMode>
+    {/* <React.StrictMode> */}
       <App />
-    </React.StrictMode>
+    {/* </React.StrictMode> */}
   </Provider>
 );
 

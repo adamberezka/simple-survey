@@ -38,6 +38,7 @@ const CheckBoxQuestion: React.FC<CheckboxQuestionProps>= ({
       <div className="mt-3 pl-2 flex flex-col gap-y-1">
         {answers.map((answer: RequestPossibleAnswers, index: number) => 
           <PossibleAnswer 
+            key={index}
             content={answer.content}
             type="checkbox"
             deleteAnswer={() => deleteAnswer(index)}

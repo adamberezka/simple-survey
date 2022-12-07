@@ -14,6 +14,7 @@ interface Survey {
   description: string;
   id: number;
   ownerId: number;
+  hash: string;
 }
 
 const Surveys: React.FC = () => {
@@ -23,11 +24,7 @@ const Surveys: React.FC = () => {
 
   useEffect(() => {
     getUserSurveys(user.id, user.jwt)
-      .then(res => {
-        console.log(res.data.surveys);
-        
-        setUserSurveys([...res.data.surveys]);
-      })
+      .then(res => setUserSurveys([...res.data.surveys]))
       .catch(err => console.log(err));
   }, []);
 
@@ -46,8 +43,13 @@ const Surveys: React.FC = () => {
         </div>
         <div className="flex gap-x-4">
           {userSurveys.map(survey => 
-            // TODO: proper navigate
-            <SurveyMinature title={survey.title} description={survey.description} closeDate={survey.closeDate} onClick={() => navigate("/surveys")}/>  
+            <SurveyMinature 
+              key={survey.id}
+              title={survey.title} 
+              description={survey.description} 
+              closeDate={survey.closeDate} 
+              onClick={() => navigate(`/surveys/${survey.hash}`)}
+            />  
           )}
         </div>
       </div>

@@ -11,7 +11,7 @@ const Login: React.FC = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	function handleLoginResponse(googleResponse : any) {
+	function handleLoginResponse(googleResponse: {credential: string}) {
 		loginUser(googleResponse.credential).then( (apiResponse) => {
 			console.log(apiResponse)
 				if(apiResponse.status === 200) {

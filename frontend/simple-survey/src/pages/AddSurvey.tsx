@@ -102,6 +102,7 @@ const AddSurvey: React.FC = () => {
               
               if (question.type === QuestionType.OPEN)
                 return <OpenQuestion 
+                  key={index}
                   index={index}
                   content={question.content} deleteQuestion={() => deleteQuestion(index, setQuestionList, questions)} 
                   title={question.type}
@@ -110,6 +111,7 @@ const AddSurvey: React.FC = () => {
 
               if (question.type === QuestionType.CHECKBOX)
                 return <CheckBoxQuestion
+                  key={index}
                   index={index} 
                   content={question.content} deleteQuestion={() => deleteQuestion(index, setQuestionList, questions)} 
                   title={question.type}
@@ -122,6 +124,7 @@ const AddSurvey: React.FC = () => {
 
               if (question.type === QuestionType.RADIO)
                 return <RadioButtonQuestion 
+                  key={index}
                   index={index}
                   content={question.content} deleteQuestion={() => deleteQuestion(index, setQuestionList, questions)} 
                   title={question.type}
