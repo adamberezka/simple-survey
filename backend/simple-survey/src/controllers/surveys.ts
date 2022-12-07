@@ -37,19 +37,17 @@ const createSurvey = async (req: Request, res: Response) => {
   
     const newSurvey = new Survey(surveyData.ownerId, surveyData.title, surveyData.description, true);
     await newSurvey.save();
-  
-    surveyData.questions.forEach(async (question: RequestQuestion) => {
-      const newQuestion = new Question(newSurvey.id, question.content, question.type);
-  
-      await newQuestion.save();
-  
-      question.possibleAnswers.forEach(async (answer: RequestPossibleAnswers) => {
-        const newAnswer = new PossibleAnswer(newQuestion.id, answer.content);
-
-        newAnswer.save();
-      });
-    });
     
+    for await (const question of surveyData.questions) {
+      const newQuestion = new Question(newSurvey.id, question.content, question.type);
+      await newQuestion.save();
+
+      for await (const answer of question.possibleAnswers) {
+        const newAnswer = new PossibleAnswer(newQuestion.id, answer.content);
+        await newAnswer.save();
+      }
+    }
+
     return res.status(200).end();
   } catch (error) {
     return res.status(500).json({error});
