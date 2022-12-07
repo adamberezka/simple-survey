@@ -60,7 +60,7 @@ const SurveyAnswer: React.FC = () => {
   }, [surveyAnswer]);
 
   const handleSubmit = () => {
-
+    
   }
 
   return (
