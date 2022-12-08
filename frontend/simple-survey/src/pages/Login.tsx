@@ -7,7 +7,6 @@ import { setUser } from "../redux/User/user.actions";
 import { loginUser } from "../services/BackendService";
 
 const Login: React.FC = () => {
-
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
@@ -15,18 +14,22 @@ const Login: React.FC = () => {
 		loginUser(googleResponse.credential).then( (apiResponse) => {
 			console.log(apiResponse)
 				if(apiResponse.status === 200) {
-					dispatch(setUser(
-						{
-							jwt: googleResponse.credential, 
-							email: apiResponse.data.email,
-							username: apiResponse.data.username,
-							imageUrl: apiResponse.data.imageUrl,
-							id: apiResponse.data.userId
-						}
-					))
+					const userData = {
+						jwt: googleResponse.credential, 
+						email: apiResponse.data.email,
+						username: apiResponse.data.username,
+						imageUrl: apiResponse.data.imageUrl,
+						id: apiResponse.data.userId
+					};
+
+					localStorage.setItem('userData', JSON.stringify(userData));
+
+					dispatch(setUser(userData))
+
 					navigate("/surveys");
+				} else {
+					navigate("/login")
 				}
-				else navigate("/login")
 		});
 	}
 
