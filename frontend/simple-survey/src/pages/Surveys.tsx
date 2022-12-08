@@ -26,7 +26,7 @@ const Surveys: React.FC = () => {
     getUserSurveys(user.id, user.jwt)
       .then(res => setUserSurveys([...res.data.surveys]))
       .catch(err => console.log(err));
-  }, []);
+  }, [user]);
 
   return (
     <Container className="bg-body-text w-screen h-screen">

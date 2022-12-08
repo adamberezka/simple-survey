@@ -7,19 +7,22 @@ import NotFound from './pages/NotFound';
 import SurveyAnswer from './pages/SurveyAnswer';
 import Surveys from './pages/Surveys';
 import {ErrorBoundary} from 'react-error-boundary'
+import DataWrapper from './components/DataWrapper';
 
 const  App: React.FC = () => {
   return (
     <ErrorBoundary onError={(error) => console.error(error)} fallback={(<div>ERROR</div>)}>
       <Router>
-        <Routes>
-          <Route path="/login" element={<Login/>} />
-          <Route path="/surveys/:hash" element={<SurveyAnswer/>} />
-          <Route path="/surveys" element={<Surveys/>} />
-          <Route path="/add-survey" element={<AddSurvey/>} />
-          <Route path="/" element={<Navigate to="/login"/>}/>
-          <Route path="*" element={<NotFound />}/>
-        </Routes>
+        <DataWrapper>
+          <Routes>
+            <Route path="/login" element={<Login/>} />
+            <Route path="/surveys/:hash" element={<SurveyAnswer/>} />
+            <Route path="/surveys" element={<Surveys/>} />
+            <Route path="/add-survey" element={<AddSurvey/>} />
+            <Route path="/" element={<Navigate to="/login"/>}/>
+            <Route path="*" element={<NotFound />}/>
+          </Routes>
+        </DataWrapper>
       </Router>
     </ErrorBoundary>
   );
