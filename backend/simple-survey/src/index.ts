@@ -8,6 +8,7 @@ dotenv.config();
 import router from "./routes";
 import "reflect-metadata";
 import { AppDataSource } from "./data-source";
+import { logger } from "./utils/loggerUtils";
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -25,9 +26,12 @@ app.use(cookies());
 app.use(cors());
 
 /** Logging */
-// app.use(morgan('dev'));
+
+
+
 /** Parse the request */
 app.use(express.urlencoded({ extended: false }));
+
 /** Takes care of JSON data */
 app.use(express.json());
 
@@ -35,4 +39,5 @@ app.use('/', router);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at https://localhost:${port}`);
+  logger.log('info', `Server is running at https://localhost:${port}`);
 });

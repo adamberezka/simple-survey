@@ -38,21 +38,10 @@ const loginUser = async(req: Request, res: Response) => {
     });
 
     retUser.userId = user!.id;
-
-    // TODO: get user data here
   } else {
     const newUser = new User(email);
     await userRepository.save(newUser);
-
-    // TODO: get user data here
   }
-
-  // temp
-  // const user = {
-  //   email: email,
-  //   username: token.name,
-  //   imageUrl: token.picture
-  // }
 
   return res.status(200).json(retUser);
 }
