@@ -65,7 +65,7 @@ const getUserSurveys = async (req: Request, res: Response) => {
 
     return res.status(200).json({surveys});
   } catch (error) {
-    return res.status(500).json({error})
+    return res.status(500).json({error});
   }
 }
 

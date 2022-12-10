@@ -23,8 +23,15 @@ const readLogs = () => {
   const fs = require('fs');
 
   try {
-    const data = fs.readFileSync('./logs.log', 'utf-8');
-    console.log(data);
+    let data = fs.readFileSync('./logs.log', 'utf-8').split('\n');
+
+    data.map((log: string) => log.substring(0, log.length - 1));
+
+    data.pop();
+    
+    data = data.map((log: string) => JSON.parse(log));
+
+    return data;
   } catch (err) {
     console.error(err);
   }
