@@ -55,3 +55,9 @@ export interface QuestionAnswerRequest {
   possibleAnswerId: number | null;
   content: string | null;
 }
+
+export interface Log {
+  level: string;
+  message: string;
+  timestamp: string;
+}
