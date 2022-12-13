@@ -7,27 +7,38 @@ interface SidebarProps {
   children?: React.ReactNode,
   username?: string,
   email?: string,
-  imgUrl?: string
+  imgUrl?: string,
+  isAdmin?: boolean
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
   className,
   username,
   email,
-  imgUrl
+  imgUrl,
+  isAdmin = false
 }) => {
   const navigate = useNavigate();
   return (
-    <div className={`bg-primary text-body-text left-0 flex flex-row justify-center items-center h-screen w-64 ${className}`}>
-      <div>
-        {imgUrl}
-        {username}
-        {email}
+    <div className={`bg-primary text-body-text left-0 flex flex-col gap-y-16 justify-center items-center h-screen w-64 ${className}`}>
+      <div className="flex flex-col justify-center items-center gap-y-2">
+        <img src={imgUrl} className="rounded-full"/>
+        <div>
+          {username}
+        </div>
+        <div>
+          {email}
+        </div>
       </div>
-
-      <Button className="" onClick={() => navigate("/add-survey")}>
-        + Add New Survey
-      </Button>
+      <div className="flex flex-col gap-y-2">
+        <Button className="bg-secondary px-4 py-1" onClick={() => navigate("/add-survey")}>
+          + Add New Survey
+        </Button>
+        {isAdmin &&
+        <Button className="bg-secondary px-4 py-1" onClick={() => navigate("/logs")}>
+          Browse Logs
+        </Button>}
+      </div>
     </div>
   );
 }

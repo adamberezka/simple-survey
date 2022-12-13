@@ -8,7 +8,8 @@ export interface User {
   email: string,
   username: string,
   imageUrl: string,
-  id: number
+  id: number,
+  isAdmin?: boolean
 }
 
 export interface RequestPossibleAnswers {

@@ -19,7 +19,8 @@ const Login: React.FC = () => {
 						email: apiResponse.data.email,
 						username: apiResponse.data.username,
 						imageUrl: apiResponse.data.imageUrl,
-						id: apiResponse.data.userId
+						id: apiResponse.data.userId,
+						isAdmin: apiResponse.data.isAdmin
 					};
 
 					localStorage.setItem('userData', JSON.stringify(userData));
