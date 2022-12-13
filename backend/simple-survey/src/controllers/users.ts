@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import jwtDecode from "jwt-decode";
 import { AppDataSource } from "../data-source";
-import { User } from "../entities/User";
+import { User, UserRole } from "../entities/User";
 import { readLogs } from "../utils/loggerUtils";
 import { userExists } from "../utils/userUtils";
 
@@ -30,7 +30,8 @@ const loginUser = async (req: Request, res: Response) => {
     email: email,
     username: token.name,
     imageUrl: token.picture,
-    userId: 0
+    userId: 0,
+    isAdmin: false
   };
 
   if (await userExists(email)) {
@@ -39,6 +40,7 @@ const loginUser = async (req: Request, res: Response) => {
     });
 
     retUser.userId = user!.id;
+    retUser.isAdmin = user!.role === UserRole.ADMIN;
   } else {
     const newUser = new User(email);
     await userRepository.save(newUser);
