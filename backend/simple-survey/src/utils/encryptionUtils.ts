@@ -1,8 +1,8 @@
 const crypto = require("crypto");
 
-const algorithm = process.env.CRYPTO_ALGORITHM as string;
-const initVector = crypto.randomBytes(Number(process.env.NUM_RANDOM_BYTES as string));
-const secretKey = process.env.CRYPTO_KEY as string;
+const algorithm = process.env.CRYPTO_ALGORITHM as string || "aes-256-ctr";
+const initVector = crypto.randomBytes(Number(process.env.NUM_RANDOM_BYTES as string || 16));
+const secretKey = process.env.CRYPTO_KEY as string || "eShVmYq3t6w9z$B&E)H@McQfTjWnZr4u";
 
 const encryptSurveyId = (surveyId: number) => {
 
