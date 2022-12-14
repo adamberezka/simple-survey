@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { appCache } from "..";
-import { logger } from "../utils/loggerUtils";
+import { loginLogger } from "../utils/loggerUtils";
 
 const jwt = require('jsonwebtoken');
 
@@ -29,6 +29,7 @@ const getKey = (header: any, callback: Function) => {
 const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.body.jwt;
+    const { name, email } = jwt.decode(req.body.jwt);
 
     if (token) {
       jwt.verify(token, getKey, { algorithms: ['RS256'] }, (err: Error, _decodedToken: Object) => {
@@ -36,7 +37,7 @@ const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
           appCache.set('googlePublicKey', null);
           jwt.verify(token, getKey, { algorithms: ['RS256'] }, (err: Error, _decodedToken: Object) => {
             if (err) {
-              logger.log('error', `Verify error: ${err.message}`);
+              loginLogger.log('error', `User with redentials: ${email} : ${name} - verify error: ${err.message}`);
               res.status(403).end();
             } else {
               next();
@@ -47,11 +48,11 @@ const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
         }
       })
     } else {
-      logger.log('error', 'Missing token error');
+      loginLogger.log('error', 'Missing token error');
       res.status(401).end();
     }
   } catch (error) {
-    logger.log('error', `Authentication error: ${error}`);
+    loginLogger.log('error', `Authentication error: ${error}`);
     res.status(401).end();
   }
 }

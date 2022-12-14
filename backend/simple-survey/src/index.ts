@@ -8,7 +8,7 @@ dotenv.config();
 import router from "./routes";
 import "reflect-metadata";
 import { AppDataSource } from "./data-source";
-import { logger } from "./utils/loggerUtils";
+import { defaultLogger } from "./utils/loggerUtils";
 import logRequests from "./middleware/loggerMiddleware";
 
 const app = express();
@@ -38,5 +38,5 @@ app.use('/', logRequests, router);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at https://localhost:${port}`);
-  logger.log('info', `Server is up and running at port: ${port}`);
+  defaultLogger.log('info', `Server is up and running at port: ${port}`);
 });

@@ -10,16 +10,16 @@ const DataWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // axios.interceptors.response.use((res: AxiosResponse) => {
+  axios.interceptors.response.use((res: AxiosResponse) => {
 
-  //   // if token expired
-  //   if (res.status === 403) {
-  //     localStorage.removeItem('userData');
-  //     navigate('/login');
-  //   }
+    // if token expired
+    if (res.status === 403) {
+      localStorage.removeItem('userData');
+      navigate('/login');
+    }
 
-  //   return res;
-  // });
+    return res;
+  });
 
   useEffect(() => {
     setLoading("loading");

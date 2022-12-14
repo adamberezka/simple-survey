@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import jwtDecode from "jwt-decode";
 import { AppDataSource } from "../data-source";
 import { User, UserRole } from "../entities/User";
-import { readLogs } from "../utils/loggerUtils";
+import { loginLogger, readLogs } from "../utils/loggerUtils";
 import { userExists } from "../utils/userUtils";
 
 const userRepository = AppDataSource.getRepository(User);
@@ -46,12 +46,13 @@ const loginUser = async (req: Request, res: Response) => {
     await userRepository.save(newUser);
   }
 
+  loginLogger.log('info', `Successfull user log in: email: ${retUser.email}, name: ${retUser.username}, id: ${retUser.userId}`);
   return res.status(200).json(retUser);
 }
 
 const getLogs = async (req: Request, res: Response) => {
   try {
-    return res.status(200).json(readLogs());
+    return res.status(200).json(readLogs(req.body.from, req.body.to, req.body.allLogs ? './default-logs' : './login-logs'));
   } catch (error) {
     return res.status(500).json({error});
   }
