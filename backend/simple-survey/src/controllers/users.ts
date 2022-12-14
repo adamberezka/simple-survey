@@ -52,7 +52,7 @@ const loginUser = async (req: Request, res: Response) => {
 
 const getLogs = async (req: Request, res: Response) => {
   try {
-    return res.status(200).json(readLogs(req.body.from, req.body.to, req.body.allLogs ? './default-logs' : './login-logs'));
+    return res.status(200).json(await readLogs(req.body.from, req.body.to, req.body.allLogs ? './default-logs' : './login-logs'));
   } catch (error) {
     return res.status(500).json({error});
   }

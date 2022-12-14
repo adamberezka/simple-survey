@@ -56,8 +56,8 @@ const readLogs = async (from: Date, to: Date, logsPath: string) => {
   const { promises: fs } = require('fs');
 
   try {
-    const fromTs = from.getTime();
-    const toTs = to.getTime();
+    const fromTs = new Date(from).getTime();
+    const toTs = new Date(to).getTime();
 
     let logFiles: string[] = await fs.readdir(logsPath);
 

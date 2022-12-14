@@ -36,7 +36,7 @@ const BrowseLogs: React.FC = () => {
 
     const showLogs = () => {
         if(chosenLogs == LogType.ALL_LOGS) {
-            getLogs(user.jwt, startDate, endDate, true).then((res) => setAllLogs(res.data));
+            getLogs(user.jwt, startDate, endDate, true).then((res) => console.log(res));
         }
         else if( chosenLogs == LogType.LOGIN_LOGS){
             getLogs(user.jwt, startDate, endDate, false).then((res) => setLoginLogs(res.data));
