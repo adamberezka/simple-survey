@@ -35,10 +35,12 @@ const BrowseLogs: React.FC = () => {
     }
 
     const showLogs = () => {
-        if(chosenLogs == LogType.ALL_LOGS)
-            setAllLogs([{message: "ALL LOGS", timestamp: "timestamp", level: "INFO"}]);
-        else if( chosenLogs == LogType.LOGIN_LOGS)
-            setLoginLogs([{message: "LOGIN LOGS", timestamp: "timestamp", level: "INFO"}]);
+        if(chosenLogs == LogType.ALL_LOGS) {
+            getLogs(user.jwt, startDate, endDate, true).then((res) => setAllLogs(res.data));
+        }
+        else if( chosenLogs == LogType.LOGIN_LOGS){
+            getLogs(user.jwt, startDate, endDate, false).then((res) => setLoginLogs(res.data));
+        }
     }
 
     const downloadLogs = () => {
@@ -46,6 +48,7 @@ const BrowseLogs: React.FC = () => {
     }
 
     const mapLogs = (logs: Log[]) => {
+        console.log(logs);
         return logs.map(log => {
             return <div>{log.timestamp} - [{log.level}] - {log.message}</div>
         })
