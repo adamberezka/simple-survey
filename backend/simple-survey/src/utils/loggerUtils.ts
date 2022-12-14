@@ -59,7 +59,6 @@ const readLogs = async (from: Date, to: Date, logsPath: string) => {
     const fromTs = from.getTime();
     const toTs = to.getTime();
 
-
     let logFiles: string[] = await fs.readdir(logsPath);
 
     logFiles = logFiles.filter((file: string) => {
@@ -68,8 +67,6 @@ const readLogs = async (from: Date, to: Date, logsPath: string) => {
       return fileTs >= fromTs && fileTs <= toTs
     });
 
-    console.log(logFiles);
-    
     let data: string[] = [];
     
     for (const log of logFiles) {
