@@ -30,7 +30,7 @@ const Surveys: React.FC = () => {
 
   return (
     <Container className="bg-body-text w-screen h-screen">
-      <Sidebar />
+      <Sidebar username={user.username} email={user.email} imgUrl={user.imageUrl} isAdmin={user.isAdmin}/>
       
       <div className="h-[90%] w-[90%] m-10 py-6 px-12 shadow-lg border-0 border-[#bbbbbb] bg-white rounded-2xl">
         <div className="mb-6">

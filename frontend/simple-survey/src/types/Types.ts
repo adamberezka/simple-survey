@@ -8,7 +8,8 @@ export interface User {
   email: string,
   username: string,
   imageUrl: string,
-  id: number
+  id: number,
+  isAdmin?: boolean
 }
 
 export interface RequestPossibleAnswers {
@@ -47,10 +48,33 @@ export interface SurveyAnswerRequest {
   surveyId: number;
   userId: number;
   jwt: string;
-  answers: QuestionAnswerRequest[]
+  answers: QuestionAnswerRequest[];
 }
 export interface QuestionAnswerRequest {
-  questionId: number
+  questionId: number;
   possibleAnswerId: number | null;
   content: string | null;
+}
+
+export interface Log {
+  level: string;
+  message: string;
+  timestamp: string;
+}
+
+export interface SurveyResult {
+  title: string;
+  description: string;
+  totalAnswers: number;
+  questionsResults: QuestionResult[] 
+}
+
+export interface QuestionResult {
+  content: string;
+  answersResults: QuestionAnswerResult[]
+}
+
+export interface QuestionAnswerResult {
+  content: string;
+  totalAnswers: number;
 }
