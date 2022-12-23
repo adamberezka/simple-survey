@@ -11,7 +11,6 @@ const DataWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
 
   axios.interceptors.response.use((res: AxiosResponse) => {
-
     return res;
   }, (error: AxiosError) => {
     console.log(error);
@@ -22,6 +21,8 @@ const DataWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       dispatch(unsetUser());
       navigate('/login');
     }
+
+    return Promise.reject(error);
   });
 
   useEffect(() => {
