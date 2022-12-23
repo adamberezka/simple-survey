@@ -6,7 +6,9 @@ import Container from "../components/Container";
 import { setUser } from "../redux/User/user.actions";
 import { loginUser } from "../services/BackendService";
 
-const Login: React.FC = () => {
+const Login: React.FC<{userLoggedIn: boolean}> = ({
+	userLoggedIn
+}) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
@@ -35,6 +37,9 @@ const Login: React.FC = () => {
 	}
 
 	useEffect(() => {
+		if (userLoggedIn) {
+			navigate("/surveys");
+		}
 		// @ts-ignore
 		google.accounts.id.initialize({
 			client_id: "502580724225-j05b06b81p3rfk626ino46dqgor4rofm.apps.googleusercontent.com",
@@ -46,7 +51,8 @@ const Login: React.FC = () => {
 			document.getElementById("googleLogin"),
 			{theme: "outline", size: "large", width: "240"}
 		);
-	}, [])
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<Container className="bg-primary w-screen h-screen">

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { setUser } from "../redux/User/user.actions";
-import axios, { AxiosResponse } from "axios";
+import { setUser, unsetUser } from "../redux/User/user.actions";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 const DataWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [loading, setLoading] = useState<null | "loading" | "done">(null);
@@ -12,13 +12,16 @@ const DataWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   axios.interceptors.response.use((res: AxiosResponse) => {
 
+    return res;
+  }, (error: AxiosError) => {
+    console.log(error);
+    
     // if token expired
-    if (res.status === 403) {
+    if (error.response?.status === 403) {
       localStorage.removeItem('userData');
+      dispatch(unsetUser());
       navigate('/login');
     }
-
-    return res;
   });
 
   useEffect(() => {
@@ -34,6 +37,7 @@ const DataWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     }
 
     setLoading("done");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

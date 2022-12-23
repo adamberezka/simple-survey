@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Container from "../components/Container";
-import Sidebar from "../components/Sidebar";
+import ContainerContent from "../components/ContainerContent";
 import SurveyMinature from "../components/SurveyMinature";
 import { getUserSurveys } from "../services/BackendService";
 import { ReduxState } from "../types/Types";
@@ -29,10 +29,8 @@ const Surveys: React.FC = () => {
   }, [user]);
 
   return (
-    <Container className="bg-body-text w-screen h-screen">
-      <Sidebar username={user.username} email={user.email} imgUrl={user.imageUrl} isAdmin={user.isAdmin}/>
-      
-      <div className="h-[90%] w-[90%] m-10 py-6 px-12 shadow-lg border-0 border-[#bbbbbb] bg-white rounded-2xl">
+    <Container>
+      <ContainerContent>
         <div className="mb-6">
           <div className="text-4xl font-bold mb-2">
             My Surveys
@@ -45,14 +43,14 @@ const Surveys: React.FC = () => {
           {userSurveys.map(survey => 
             <SurveyMinature 
               key={survey.id}
-              title={survey.title} 
-              description={survey.description} 
-              closeDate={survey.closeDate} 
-              onClick={() => navigate(`/surveys/${survey.hash}`)}
+              title={survey.title}
+              description={survey.description}
+              closeDate={survey.closeDate}
+              onClick={() => navigate(`/survey-result/${survey.hash}`)}
             />  
           )}
         </div>
-      </div>
+      </ContainerContent>
 
     </Container>
   );

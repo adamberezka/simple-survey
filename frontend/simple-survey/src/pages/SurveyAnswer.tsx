@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react"
 import { useSelector } from "react-redux";
 import { useMatch, useNavigate } from "react-router-dom";
 import Container from "../components/Container";
+import ContainerContent from "../components/ContainerContent";
 import QuestionAnswer from "../components/QuestionAnswer";
 import { answerSurvey, getSurvey } from "../services/BackendService";
 import { QuestionType, ReduxState, RequestQuestion, SurveyAnswerData, SurveyAnswerRequest, SurveyRequestBody } from "../types/Types";
@@ -39,6 +40,7 @@ const SurveyAnswer: React.FC = () => {
         });
       })
       .catch(err => console.log(err))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateAnswer = (question: RequestQuestion) => (answer: string | number | number[]) => {
@@ -127,42 +129,45 @@ const SurveyAnswer: React.FC = () => {
   }
 
   return (
-    <Container className="bg-body-text w-full min-h-screen overflow-x-hidden !items-start pb-12">
-      <div className="w-full max-w-[1024px] px-6">
-        {!!surveyData && 
-          <section className="mt-10 w-full">
-            <div className="text-4xl font-bold mb-2">
-              {surveyData.title}
+    // <Container className="bg-body-text w-full min-h-screen overflow-x-hidden !items-start pb-12">
+    <Container>
+      <ContainerContent>
+        <div className="w-full max-w-[1024px] px-6">
+          {!!surveyData && 
+            <section className="mt-10 w-full">
+              <div className="text-4xl font-bold mb-2">
+                {surveyData.title}
+              </div>
+              <div className="text-xl font-normal">
+                {surveyData.description}
+              </div>
+            </section>
+          }
+          {!!surveyData && !!surveyData.questions.length && 
+            <div className="flex flex-col mt-10 gap-y-4">
+              {surveyData.questions.map(question => 
+                <QuestionAnswer 
+                  key={question.id}
+                  question={question}
+                  possibleAnswers={surveyData.questions.find(questionInData => questionInData.id === question.id)?.possibleAnswers!} 
+                  answer={surveyAnswer?.answers.get(question.id)!} 
+                  updateAnswer={updateAnswer(question)}
+                />
+              )}
             </div>
-            <div className="text-xl font-normal">
-              {surveyData.description}
-            </div>
-          </section>
-        }
-        {!!surveyData && !!surveyData.questions.length && 
-          <div className="flex flex-col mt-10 gap-y-4">
-            {surveyData.questions.map(question => 
-              <QuestionAnswer 
-                key={question.id}
-                question={question}
-                possibleAnswers={surveyData.questions.find(questionInData => questionInData.id === question.id)?.possibleAnswers!} 
-                answer={surveyAnswer?.answers.get(question.id)!} 
-                updateAnswer={updateAnswer(question)}
-              />
-            )}
-          </div>
-        }
-        <div className="flex justify-center items-center mt-12"> 
-          <div className={answersValid ? "cursor-pointer" : "cursor-not-allowed"}>
-            <div 
-              className={`text-xl flex-grow-0 rounded-2xl bg-primary text-white px-12 py-2 select-none ${!answersValid && "pointer-events-none"}`} 
-              onClick={() => handleSubmit()}
-            >
-              Submit answer
+          }
+          <div className="flex justify-center items-center mt-12"> 
+            <div className={answersValid ? "cursor-pointer" : "cursor-not-allowed"}>
+              <div 
+                className={`text-xl flex-grow-0 rounded-2xl bg-primary text-white px-12 py-2 select-none ${!answersValid && "pointer-events-none"}`} 
+                onClick={() => handleSubmit()}
+              >
+                Submit answer
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </ContainerContent>
     </Container>
   );
 }

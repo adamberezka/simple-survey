@@ -10,7 +10,7 @@ const Container: React.FC<ContainerProps> = ({
   children
 }) => {
   return (
-    <div className={`flex flex-row justify-center items-center ${className}`}>
+    <div className={`flex flex-row justify-center py-6 items-center max-w-[100vw] overflow-hidden pl-[260px] bg-body-text w-screen min-h-screen ${className}`}>
       {children}
     </div>
   );
