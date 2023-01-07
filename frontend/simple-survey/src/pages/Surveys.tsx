@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import ContainerContent from "../components/ContainerContent";
+import Loading from "../components/Loading";
 import SurveyMinature from "../components/SurveyMinature";
 import { getUserSurveys } from "../services/BackendService";
 import { ReduxState } from "../types/Types";
@@ -19,12 +20,17 @@ interface Survey {
 
 const Surveys: React.FC = () => {
   const [userSurveys, setUserSurveys] = useState<Survey[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const user = useSelector((state: ReduxState) => state.user);
 
   useEffect(() => {
+    setLoading(true);
     getUserSurveys(user.id, user.jwt)
-      .then(res => setUserSurveys([...res.data.surveys]))
+      .then(res => {
+        setUserSurveys([...res.data.surveys]);
+        setLoading(false);
+      })
       .catch(err => console.log(err));
   }, [user]);
 
@@ -40,7 +46,14 @@ const Surveys: React.FC = () => {
           </div>
         </div>
         <div className="flex gap-x-4 gap-y-4 flex-wrap">
-          {userSurveys.map(survey => 
+          {loading ? 
+          (<div className="w-full h-full flex justify-center items-center">
+            <div className="flex flex-col justify-center items-center">
+              <Loading />
+              Loading your surveys...
+            </div>
+          </div>) : 
+          userSurveys.map(survey => 
             <SurveyMinature 
               key={survey.id}
               title={survey.title}

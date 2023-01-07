@@ -18,8 +18,8 @@ const BrowseLogs: React.FC = () => {
     const [loginLogs, setLoginLogs] = useState<Log[]>([]);
     const [allLogs, setAllLogs] = useState<Log[]>([]);
     const [chosenLogs, setChosenLogs] = useState<LogType>(LogType.LOGIN_LOGS);
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(new Date((new Date().setHours(0, 0, 0))));
+    const [endDate, setEndDate] = useState(new Date(new Date().setHours(23, 59, 59)));
 
     const user = useSelector((state: ReduxState) => state.user);
 
@@ -37,12 +37,12 @@ const BrowseLogs: React.FC = () => {
     }
 
     const downloadLogs = () => {
-        
+        // TODO
     }
 
     const mapLogs = (logs: Log[]) => {
         if (!logs || !logs.length) {
-            return <div className="min-h-full">Sorry, no logs where found :(</div>
+            return <div className="min-h-full">Sorry, no logs were found :(</div>
         }
         console.log(logs);
         return logs.map(log => {
@@ -62,17 +62,17 @@ const BrowseLogs: React.FC = () => {
                     onChange={onLogSelect}/>
                 <div className="text-center p-1">FROM: </div> 
                 <div className="content-center p-1">
-                    <DatePicker className="outline outline-1 outline-light-gray p-1" selected={startDate} onChange={(date:Date) => setStartDate(date)} />
+                    <DatePicker className="outline outline-1 outline-light-gray p-1" selected={startDate} onChange={(date: Date) => setStartDate(new Date(date.setHours(0, 0, 0)))} />
                 </div>
                 <div className="text-center p-1">TO: </div> 
                 <div className="content-center p-1">
-                    <DatePicker className="outline outline-1 outline-light-gray p-1" selected={endDate} onChange={(date:Date) => setEndDate(date)} />
+                    <DatePicker className="outline outline-1 outline-light-gray p-1" selected={endDate} onChange={(date: Date) => setEndDate(new Date(date.setHours(23, 59, 59)))} />
                 </div>
                 <div className="border border-solid border-1 cursor-pointer text-center p-1" onClick={showLogs}>SHOW</div>
                 <div className="border border-solid border-1 cursor-pointer text-center p-1" onClick={downloadLogs}>DOWNLOAD</div>
             </div>
             <div className="border-solid border-b border-light-gray"></div>
-            <div className="max-h-[100%] bg-[#222222] text-[#FFFFFF] overflow-scroll py-2 px-4 whitespace-nowrap flex-grow">
+            <div className="max-h-[100%] bg-[#222222] text-[#FFFFFF] overflow-scroll py-2 px-2 whitespace-nowrap flex-grow">
                 {
                     (chosenLogs === LogType.LOGIN_LOGS) ? mapLogs(loginLogs) : mapLogs(allLogs)
                 }
