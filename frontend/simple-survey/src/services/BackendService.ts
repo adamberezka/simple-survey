@@ -14,3 +14,4 @@ export const getUserSurveys = (userId: number, jwt: string) => axios.post(survey
 export const getSurvey = (hash: string, jwt: string) => axios.post(surveyUrl + "/get", { hash, jwt });
 export const answerSurvey = (surveyData: SurveyAnswerRequest) => axios.post(surveyUrl + "/answer", { ...surveyData });
 export const getLogs = (jwt: string, from: Date, to: Date, allLogs: boolean) => axios.post(logsUrl, {jwt: jwt, from: from, to: to, allLogs: allLogs});
+export const getSurveyResults = (jwt: string, userId: number, hash: string) => axios.post(surveyUrl + "/survey-results", {jwt: jwt, userId: userId, hash: hash});

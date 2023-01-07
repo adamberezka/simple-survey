@@ -131,4 +131,21 @@ const answerSurvey = async (req: Request, res: Response) => {
   }
 }
 
-export { createSurvey, getUserSurveys, getSurvey, answerSurvey };
+const getSurveyResults = async (req: Request, res: Response) => {
+  try {
+    const hash = req.body.hash.split("_");
+    const surveyId = decryptSurveyId({iv: hash[0], content: hash[1]});
+    
+    const survey = await surveyRepository.findOneBy({ id: surveyId });
+
+    if (survey?.ownerId !== req.body.userId) {
+      return res.status(200).json({ error: "Sorry, only author of this survey can view its results!" });
+    }
+
+    return res.status(200).end();
+  } catch (error) {
+    return res.status(500).json({error});
+  }
+}
+
+export { createSurvey, getUserSurveys, getSurvey, answerSurvey, getSurveyResults };

@@ -1,15 +1,19 @@
-import React, { FocusEvent, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useMatch } from "react-router-dom";
 import Container from "../components/Container";
 import ContainerContent from "../components/ContainerContent";
 import { ReduxState, User } from "../types/Types";
 import { ReactComponent as CheckCircleIcon } from "../icons/CheckCircle.svg";
+import { getSurveyResults } from "../services/BackendService";
+import Loading from "../components/Loading";
 
 const SurveyResult: React.FC = () => {
   const user = useSelector<ReduxState, User>(state => state.user);
   const [linkCopied, setLinkCopied] = useState<boolean>(false);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const match = useMatch("/survey-result/:hash");
 
   const surveyLink = window.location.href.replace("survey-result", "surveys");
 
@@ -21,11 +25,40 @@ const SurveyResult: React.FC = () => {
     }
   };
 
-  // TODO: check if user is survey author
+  useEffect(() => {
+    setLoading(true);
+    getSurveyResults(user.jwt, user.id, match?.params.hash!)
+    .then(res => {
+      if (res.data.error) {
+        setError(res.data.error);
+        setLoading(false);
+      } else {
+        // TODO
+        console.log(res.data);
+        setLoading(false);
+      }
+    }).catch(err => {
+      console.error(err);
+      setLoading(false);
+    });
+
+
+    return () => setLoading(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container>
       <ContainerContent>
+        {loading ? 
+        (<div className="w-full h-full flex justify-center items-center">
+          <div className="flex flex-col justify-center items-center">
+            <Loading />
+            Loading survey results...
+          </div>
+        </div>) :
+        (error ? 
+        <div>{error}</div> :
         <div className="flex flex-col">
           Share survey with this link:
           <div className="flex flex-row gap-x-4">
@@ -37,7 +70,7 @@ const SurveyResult: React.FC = () => {
               <CheckCircleIcon />
             </div> 
           </div>
-        </div>
+        </div>)}
       </ContainerContent>
     </Container>
   );
