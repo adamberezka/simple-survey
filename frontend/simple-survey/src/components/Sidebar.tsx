@@ -1,5 +1,7 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { unsetUser } from "../redux/User/user.actions";
 import Button from "./Button";
 
 interface SidebarProps {
@@ -19,6 +21,14 @@ const Sidebar: React.FC<SidebarProps> = ({
   isAdmin = false
 }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const logoutUser = () => {
+    localStorage.removeItem('userData');
+      dispatch(unsetUser());
+      navigate('/login');
+  }
+
   return (
     <div className={`bg-primary text-body-text left-0 top-0 flex flex-col gap-y-16 justify-center items-center h-screen w-64 fixed ${className}`}>
       <div className="flex flex-col justify-center items-center gap-y-2">
@@ -41,6 +51,9 @@ const Sidebar: React.FC<SidebarProps> = ({
         <Button className="bg-secondary px-4 py-1" onClick={() => navigate("/logs")}>
           Browse Logs
         </Button>}
+        <Button className="bg-secondary px-4 py-1" onClick={() => logoutUser()}>
+          Log out
+        </Button>
       </div>
     </div>
   );

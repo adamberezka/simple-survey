@@ -41,15 +41,22 @@ const BrowseLogs: React.FC = () => {
     }
 
     const mapLogs = (logs: Log[]) => {
+        if (!logs || !logs.length) {
+            return <div className="min-h-full">Sorry, no logs where found :(</div>
+        }
         console.log(logs);
         return logs.map(log => {
-            return <div>{log.timestamp} - [{log.level}] - {log.message}</div>
+            return <div className="flex flex-row gap-x-1 pr-4">
+                <div className="text-[#ffd439]">{new Date(log.timestamp).toLocaleString()} - </div>
+                <div className={log.level === "error" ? "text-[#fd3e3e]" : "text-[#3b59ff]"}>{log.level.toLocaleUpperCase()} - </div>
+                <div>{log.message}</div>
+            </div>
         })
     }
 
     return (    
     <Container>
-        <ContainerContent className="pb-12">
+        <ContainerContent className="flex flex-col max-h-[94vh]">
             <div className="flex flex-row gap-x-5 items-center">
                 <DropDownMenu className="w-24" items={[LogType.LOGIN_LOGS, LogType.ALL_LOGS]} 
                     onChange={onLogSelect}/>
@@ -65,7 +72,7 @@ const BrowseLogs: React.FC = () => {
                 <div className="border border-solid border-1 cursor-pointer text-center p-1" onClick={downloadLogs}>DOWNLOAD</div>
             </div>
             <div className="border-solid border-b border-light-gray"></div>
-            <div className="h-[100%] bg-[#222222] text-[#FFFFFF] overflow-scroll p-2 whitespace-nowrap">
+            <div className="max-h-[100%] bg-[#222222] text-[#FFFFFF] overflow-scroll py-2 px-4 whitespace-nowrap flex-grow">
                 {
                     (chosenLogs === LogType.LOGIN_LOGS) ? mapLogs(loginLogs) : mapLogs(allLogs)
                 }

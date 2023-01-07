@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useMatch, useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import ContainerContent from "../components/ContainerContent";
+import Loading from "../components/Loading";
 import QuestionAnswer from "../components/QuestionAnswer";
 import { answerSurvey, getSurvey } from "../services/BackendService";
 import { QuestionType, ReduxState, RequestQuestion, SurveyAnswerData, SurveyAnswerRequest, SurveyRequestBody } from "../types/Types";
@@ -10,11 +11,13 @@ import { QuestionType, ReduxState, RequestQuestion, SurveyAnswerData, SurveyAnsw
 const SurveyAnswer: React.FC = () => {
   const [surveyData, setSurveyData] = useState<SurveyRequestBody>();
   const [surveyAnswer, setSurveyAnswer] = useState<SurveyAnswerData>();
+  const [loading, setLoading] = useState<boolean>(false);
   const match = useMatch("/surveys/:hash");
   const user = useSelector((state: ReduxState) => state.user);
   const navigate = useNavigate();
 
   useEffect(() => {
+    setLoading(true);
     getSurvey(match?.params.hash!, user.jwt)
       .then(res => {
         let survey = res.data.retSurvey;
@@ -38,6 +41,7 @@ const SurveyAnswer: React.FC = () => {
           userId: user.id,
           answers: answersMap
         });
+        setLoading(false);
       })
       .catch(err => console.log(err))
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,7 +133,6 @@ const SurveyAnswer: React.FC = () => {
   }
 
   return (
-    // <Container className="bg-body-text w-full min-h-screen overflow-x-hidden !items-start pb-12">
     <Container>
       <ContainerContent>
         <div className="w-full max-w-[1024px] px-6">
@@ -156,7 +159,14 @@ const SurveyAnswer: React.FC = () => {
               )}
             </div>
           }
-          <div className="flex justify-center items-center mt-12"> 
+          {loading ? 
+          <div className="w-full h-full flex justify-center items-center">
+            <div className="flex flex-col justify-center items-center">
+              <Loading />
+              Loading survey...
+            </div>
+          </div>
+          : <div className="flex justify-center items-center mt-12"> 
             <div className={answersValid ? "cursor-pointer" : "cursor-not-allowed"}>
               <div 
                 className={`text-xl flex-grow-0 rounded-2xl bg-primary text-white px-12 py-2 select-none ${!answersValid && "pointer-events-none"}`} 
@@ -165,7 +175,7 @@ const SurveyAnswer: React.FC = () => {
                 Submit answer
               </div>
             </div>
-          </div>
+          </div>}
         </div>
       </ContainerContent>
     </Container>

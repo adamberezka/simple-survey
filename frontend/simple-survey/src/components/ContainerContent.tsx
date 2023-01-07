@@ -10,7 +10,7 @@ const ContainerContent: React.FC<ContainerContentProps> = ({
   className
 }) => {
   return (
-    <div className={`py-6 px-12 min-h-[95vh] h-px w-[95%] shadow-lg border-0 border-[#bbbbbb] bg-white rounded-2xl relative ${className}`}>
+    <div className={`py-6 px-12 min-h-[94vh] w-[95%] shadow-lg border-0 border-[#bbbbbb] bg-white rounded-2xl relative ${className}`}>
       {children}
     </div>
   );
