@@ -21,6 +21,8 @@ const SurveyResult: React.FC = () => {
     }
   };
 
+  // TODO: check if user is survey author
+
   return (
     <Container>
       <ContainerContent>

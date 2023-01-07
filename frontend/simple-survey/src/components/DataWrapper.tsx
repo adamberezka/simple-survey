@@ -34,7 +34,9 @@ const DataWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       dispatch(setUser(JSON.parse(localUserData)));
       navigate(location.pathname, { replace: true });
     } else {
-      navigate('/login');
+      if (!location.pathname.includes("/surveys/")) {
+        navigate('/login');
+      }
     }
 
     setLoading("done");

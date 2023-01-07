@@ -6,10 +6,14 @@ import { PossibleAnswer } from "../entities/PossibleAnswer";
 import { decryptSurveyId, encryptSurveyId } from "../utils/encryptionUtils";
 import { SurveyAnswer } from "../entities/SurveyAnswer";
 import { QuestionAnswer } from "../entities/QuestionAnswer";
+import jwtDecode from "jwt-decode";
+import { User } from "../entities/User";
 
 const surveyRepository = AppDataSource.getRepository(Survey);
 const questionRepository = AppDataSource.getRepository(Question);
 const answerRepository = AppDataSource.getRepository(PossibleAnswer);
+const surveyAnswerRepoository = AppDataSource.getRepository(SurveyAnswer);
+const userRepository = AppDataSource.getRepository(User);
 
 interface RequestPossibleAnswers {
   id: number;
@@ -73,6 +77,14 @@ const getSurvey = async (req: Request, res: Response) => {
   try {
     const hash = req.body.hash.split("_");
     const surveyId = decryptSurveyId({iv: hash[0], content: hash[1]});
+
+    const reqUserEmail = (jwtDecode(req.body.jwt) as { email: string })?.email;
+    const reqUser = await userRepository.findOneBy({ email: reqUserEmail });
+    const surveyAnswer = await surveyAnswerRepoository.findOneBy({ surveyId: surveyId, userId: reqUser?.id  });
+
+    if (!!surveyAnswer) {
+      return res.status(200).json({ error: "You have already answered this survey!" }); 
+    }
 
     const survey = await surveyRepository.findOneBy({ id: surveyId });
     const questions = await questionRepository.findBy({ surveyId: survey!.id });

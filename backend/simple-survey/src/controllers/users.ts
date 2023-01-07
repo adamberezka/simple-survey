@@ -7,18 +7,6 @@ import { userExists } from "../utils/userUtils";
 
 const userRepository = AppDataSource.getRepository(User);
 
-const getUser = async (req: Request, res: Response) => {
-  console.log(req);
-  
-  const users = {user: "test"};
-
-  const newUser = new User("email@email.com");
-
-  await userRepository.save(newUser);
-
-  return res.status(200).json({users});
-}
-
 const loginUser = async (req: Request, res: Response) => {
 
   const token: any = jwtDecode(req.body.jwt);
@@ -58,4 +46,4 @@ const getLogs = async (req: Request, res: Response) => {
   }
 }
 
-export { getUser, loginUser, getLogs };
+export { loginUser, getLogs };

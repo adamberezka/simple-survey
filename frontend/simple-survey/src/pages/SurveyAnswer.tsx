@@ -12,38 +12,55 @@ const SurveyAnswer: React.FC = () => {
   const [surveyData, setSurveyData] = useState<SurveyRequestBody>();
   const [surveyAnswer, setSurveyAnswer] = useState<SurveyAnswerData>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const match = useMatch("/surveys/:hash");
   const user = useSelector((state: ReduxState) => state.user);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setLoading(true);
-    getSurvey(match?.params.hash!, user.jwt)
-      .then(res => {
-        let survey = res.data.retSurvey;
-        survey.questions = survey.questions.map((question: RequestQuestion) => {
-          if (question.type === QuestionType.OPEN) {
-            question.possibleAnswers.push({ content: "" });
-            return question;
-          } else
-            return question; 
-        });
-        setSurveyData(survey);
-
-        const answersMap = new Map<number, string | number | number[] | null>();
-
-        survey.questions.forEach((question: RequestQuestion) => { 
-          answersMap.set(question.id, null)
+    if (!user || !localStorage.getItem('userData')) {
+      navigate('/login', {
+        state: {
+          redirectToSurvey: true,
+          surveyHash: match?.params.hash
+        },
+        replace: true
+      });
+    } else {
+      setLoading(true);
+      getSurvey(match?.params.hash!, user.jwt)
+        .then(res => {
+          if (res.data.error) {
+            setError(res.data.error);
+          } else {
+            let survey = res.data.retSurvey;
+            survey.questions = survey.questions.map((question: RequestQuestion) => {
+              if (question.type === QuestionType.OPEN) {
+                question.possibleAnswers.push({ content: "" });
+                return question;
+              } else
+                return question; 
+            });
+            setSurveyData(survey);
+    
+            const answersMap = new Map<number, string | number | number[] | null>();
+    
+            survey.questions.forEach((question: RequestQuestion) => { 
+              answersMap.set(question.id, null)
+            })
+    
+            setSurveyAnswer({
+              surveyId: survey.id,
+              userId: user.id,
+              answers: answersMap
+            });
+          }
+          setLoading(false);
         })
+        .catch(err => console.log(err));
+    }
 
-        setSurveyAnswer({
-          surveyId: survey.id,
-          userId: user.id,
-          answers: answersMap
-        });
-        setLoading(false);
-      })
-      .catch(err => console.log(err))
+      return () => setLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -135,6 +152,10 @@ const SurveyAnswer: React.FC = () => {
   return (
     <Container>
       <ContainerContent>
+        {error ? 
+        <div>
+          {error}
+        </div> :
         <div className="w-full max-w-[1024px] px-6">
           {!!surveyData && 
             <section className="mt-10 w-full">
@@ -176,7 +197,7 @@ const SurveyAnswer: React.FC = () => {
               </div>
             </div>
           </div>}
-        </div>
+        </div>}
       </ContainerContent>
     </Container>
   );

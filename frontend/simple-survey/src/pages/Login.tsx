@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import { setUser } from "../redux/User/user.actions";
@@ -10,7 +10,9 @@ const Login: React.FC<{userLoggedIn: boolean}> = ({
 	userLoggedIn
 }) => {
 	const navigate = useNavigate();
+	const location = useLocation();
 	const dispatch = useDispatch();
+	console.log(location);
 
 	function handleLoginResponse(googleResponse: {credential: string}) {
 		loginUser(googleResponse.credential).then( (apiResponse) => {
@@ -27,11 +29,15 @@ const Login: React.FC<{userLoggedIn: boolean}> = ({
 
 					localStorage.setItem('userData', JSON.stringify(userData));
 
-					dispatch(setUser(userData))
+					dispatch(setUser(userData));
 
-					navigate("/surveys");
+					if (location.state && location.state.redirectToSurvey && location.state.surveyHash) {
+						navigate(`/surveys/${location.state.surveyHash}`);
+					} else {
+						navigate("/surveys");
+					}
 				} else {
-					navigate("/login")
+					navigate("/login");
 				}
 		});
 	}
