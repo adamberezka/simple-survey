@@ -54,7 +54,7 @@ const donwloadLogs = async (req: Request, res: Response) => {
   const zip = new JSZip();
 
   const user: { email: string, name: string } = jwtDecode(req.body.jwt);
-  const fileName = `${user.name}_${user.email}_logs_${new Date().toDateString()}.zip`.replaceAll(" ", "_").toLowerCase();
+  const fileName = "temp_logs.zip";
 
   try {
     const fromTs = new Date(req.body.from).getTime();
@@ -74,21 +74,21 @@ const donwloadLogs = async (req: Request, res: Response) => {
       zip.file(log, fileData);      
     }
 
-    zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
+    await zip.generateNodeStream({ type: 'nodebuffer', streamFiles: true })
         .pipe(fsSync.createWriteStream(fileName))
         .on('finish', function () {
             defaultLogger.log('info', `Zipped log file has been written : ${fileName}`);
         });    
 
-    const stream = fsSync.createReadStream(`${process.cwd()}/` + fileName);
+    const stream = fsSync.createReadStream(`${process.cwd()}/${fileName}`);
+
     res.set({
       'Content-Disposition': `attachment; filename='${fileName}'`,
       'Content-Type': 'application/pdf',
     });
     
     stream.pipe(res);
-
-    // return res.download(fileName);
+    return null;
   } catch (error) {
     console.log(error);
     
