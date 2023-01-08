@@ -12,7 +12,6 @@ const Login: React.FC<{userLoggedIn: boolean}> = ({
 	const navigate = useNavigate();
 	const location = useLocation();
 	const dispatch = useDispatch();
-	console.log(location);
 
 	function handleLoginResponse(googleResponse: {credential: string}) {
 		loginUser(googleResponse.credential).then( (apiResponse) => {

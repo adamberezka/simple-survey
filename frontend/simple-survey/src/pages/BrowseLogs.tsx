@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import Container from "../components/Container";
 import DropDownMenu from "../components/DropDownMenu";
-import { getLogs } from "../services/BackendService";
+import { downloadZippedLogs, getLogs } from "../services/BackendService";
 import { Log, ReduxState } from "../types/Types";
 import DatePicker from "react-datepicker";
 
@@ -37,7 +37,23 @@ const BrowseLogs: React.FC = () => {
     }
 
     const downloadLogs = () => {
-        // TODO
+        downloadZippedLogs(user.jwt, startDate, endDate, chosenLogs === LogType.ALL_LOGS)
+        .then((res) => {
+            // create file link in browser's memory
+            const href = URL.createObjectURL(res.data);
+
+            // create "a" HTML element with href to file & click
+            const link = document.createElement('a');
+            link.href = href;
+            link.setAttribute('download', 'logs.zip'); //or any other extension
+            document.body.appendChild(link);
+            link.click();
+
+            // clean up "a" element & remove ObjectURL
+            document.body.removeChild(link);
+            URL.revokeObjectURL(href);
+        })
+        .catch(err => console.error(err))
     }
 
     const mapLogs = (logs: Log[]) => {
