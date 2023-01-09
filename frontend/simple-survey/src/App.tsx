@@ -22,6 +22,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import IndividualAnswers from './pages/IndividualAnswers';
 
 ChartJS.register(
   CategoryScale,
@@ -45,7 +46,8 @@ const App: React.FC = () => {
             <Route path="/surveys/:hash" element={<SurveyAnswer/>} />
             <Route path="/surveys" element={<Surveys/>} />
             <Route path="/add-survey" element={<AddSurvey/>} />
-            <Route path="/survey-result/:hash" element={<SurveyResult/>} />
+            <Route path="/survey-result/:hash" element={<SurveyResult />} />
+            <Route path="/individual-answers/:hash" element={<IndividualAnswers />} />
             <Route path="/logs" element={<BrowseLogs/>} />
             <Route path="/" element={<Navigate to="/login"/>}/>
             <Route path="*" element={<NotFound />}/>

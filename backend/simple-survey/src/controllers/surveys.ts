@@ -181,4 +181,35 @@ const getSurveyResults = async (req: Request, res: Response) => {
   }
 }
 
-export { createSurvey, getUserSurveys, getSurvey, answerSurvey, getSurveyResults };
+const getIndividualSurveyAnswers = async (req: Request, res: Response) => {
+  try {
+    const hash = req.body.hash.split("_");
+    const surveyId = decryptSurveyId({ iv: hash[0], content: hash[1] });
+
+    if (req.body.next === 0) {
+      const decodedToken: {email: string} = jwtDecode(req.body.jwt);
+      const survey = await surveyRepository.findOneBy({id: surveyId});
+      const user = await userRepository.findOneBy({email: decodedToken.email});
+  
+      if ((!!survey && !!user && (survey.ownerId !== user.id)) || !survey) {
+        return res.status(200).json({error: "Sorry, no survey was found!"});
+      }
+    }
+
+    const [_answers, count] = await surveyAnswerRepository.findAndCountBy({ surveyId: surveyId });
+    const [surveyAnswers, _count] = await surveyAnswerRepository.findAndCount({where: { surveyId: surveyId }, order: {id: "ASC"}, skip: req.body.next, take: 1}); 
+
+    let surveyData: {answers: QuestionAnswer[][], totalAnswers: number} = { answers: [], totalAnswers: count };
+
+    for (const surveyAnswer of surveyAnswers) {
+      const questionAnswers = await questionAnswersRepository.findBy({surveyAnswerId: surveyAnswer.id});
+      surveyData.answers.push([ ...questionAnswers ]);
+    }
+
+    return res.status(200).json({ surveyData });
+  } catch (error) {
+    return res.status(500).json({error});
+  }
+}
+
+export { createSurvey, getUserSurveys, getSurvey, answerSurvey, getSurveyResults, getIndividualSurveyAnswers };

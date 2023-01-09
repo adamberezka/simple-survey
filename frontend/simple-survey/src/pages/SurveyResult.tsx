@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux";
-import { useMatch } from "react-router-dom";
+import { useMatch, useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import ContainerContent from "../components/ContainerContent";
 import { ReduxState, SurveyRequestBody, User, RequestQuestion, QuestionType } from "../types/Types";
@@ -9,6 +9,7 @@ import { getSurveyResults } from "../services/BackendService";
 import Loading from "../components/Loading";
 import { Bar } from "react-chartjs-2";
 import { ChartOptions } from "chart.js";
+import Button from "../components/Button";
 
 interface surveyData {
   surveyTemplate: SurveyRequestBody,
@@ -37,6 +38,7 @@ const SurveyResult: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [surveyData, setSurveyData] = useState<surveyData>();
   const match = useMatch("/survey-result/:hash");
+  const navigate = useNavigate();
 
   const surveyLink = window.location.href.replace("survey-result", "surveys");
 
@@ -77,7 +79,7 @@ const SurveyResult: React.FC = () => {
       datasets: [
         {
           data: questionResults,
-          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          backgroundColor: 'rgba(62, 0, 112, 0.5)',
         }
       ]
     }
@@ -123,6 +125,14 @@ const SurveyResult: React.FC = () => {
                 <CheckCircleIcon />
               </div> 
             </div>
+          </div>
+          <div className="flex flex-col items-center mb-6">
+            <div className="text-4xl font-bold w-full">Individual survey answers</div>
+            <Button onClick={() => navigate(`/individual-answers/${match?.params.hash!}`, {
+              state: {
+                surveyTemplate: surveyData?.surveyTemplate
+              }
+            })} className="text-xl flex-grow-0 rounded-2xl bg-primary text-white px-12 py-2 mt-6 w-max">View individual answers</Button>
           </div>
           <div className="flex flex-col">
             <div className="text-4xl font-bold">Closed questions answer results</div>
