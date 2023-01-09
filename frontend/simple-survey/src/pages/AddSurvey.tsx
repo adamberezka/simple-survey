@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import CheckBoxQuestion from "../components/CheckboxQuestion";
 import Container from "../components/Container";
 import ContainerContent from "../components/ContainerContent";
+import Loading from "../components/Loading";
 import OpenQuestion from "../components/OpenQuestion";
 import RadioButtonQuestion from "../components/RadioButtonQuestion";
 import TextArea from "../components/TextArea";
@@ -64,15 +65,18 @@ const AddSurvey: React.FC = () => {
   const [questions, setQuestionList] = useState<RequestQuestion[]>([]);
   const [title, setTitle] = useState<string>("Survey title");
   const [description, setDescription] = useState<string>("Survey description");
+  const [loading, setLoading] = useState<boolean>(false);
   const {ownerId, jwt} = useSelector<ReduxState, {ownerId: number, jwt: string}>(state => ({ownerId: state.user?.id, jwt: state.user?.jwt}));
   const navigate = useNavigate();
 
   const surveyValid = isSurveyValid(questions);
   
   const handleSubmit = () => {
+    setLoading(true);
     createSurvey({ownerId, title, description, questions}, jwt)
       .then(_res => {
         navigate("/surveys");
+        setLoading(false);
       })
       .catch(err => console.log(err));
   }
@@ -80,6 +84,14 @@ const AddSurvey: React.FC = () => {
   return (
     <Container>
       <ContainerContent>
+        {loading ? 
+        (<div className="w-full h-full flex justify-center items-center">
+          <div className="flex flex-col justify-center items-center">
+            <Loading />
+            Submitting your survey, please wait...
+          </div>
+        </div>) :
+        <>
           <div className="mb-6">
             <TextArea 
               value={title}
@@ -172,6 +184,7 @@ const AddSurvey: React.FC = () => {
             </div>
           </div>
           }
+        </>}
       </ContainerContent>
     </Container>
   );

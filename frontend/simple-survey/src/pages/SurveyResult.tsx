@@ -3,16 +3,39 @@ import { useSelector } from "react-redux";
 import { useMatch } from "react-router-dom";
 import Container from "../components/Container";
 import ContainerContent from "../components/ContainerContent";
-import { ReduxState, User } from "../types/Types";
+import { ReduxState, SurveyRequestBody, User, RequestQuestion, QuestionType } from "../types/Types";
 import { ReactComponent as CheckCircleIcon } from "../icons/CheckCircle.svg";
 import { getSurveyResults } from "../services/BackendService";
 import Loading from "../components/Loading";
+import { Bar } from "react-chartjs-2";
+import { ChartOptions } from "chart.js";
+
+interface surveyData {
+  surveyTemplate: SurveyRequestBody,
+  resultsData: {[key: number]: {[key: number]: number}}
+}
+
+const chartOptions: ChartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      display: false,
+      position: 'top' as const,
+    },
+    title: {
+      display: false,
+      text: 'Chart.js Bar Chart',
+    },
+  },
+  
+};
 
 const SurveyResult: React.FC = () => {
   const user = useSelector<ReduxState, User>(state => state.user);
   const [linkCopied, setLinkCopied] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [surveyData, setSurveyData] = useState<surveyData>();
   const match = useMatch("/survey-result/:hash");
 
   const surveyLink = window.location.href.replace("survey-result", "surveys");
@@ -33,8 +56,7 @@ const SurveyResult: React.FC = () => {
         setError(res.data.error);
         setLoading(false);
       } else {
-        // TODO
-        console.log(res.data);
+        setSurveyData(res.data);        
         setLoading(false);
       }
     }).catch(err => {
@@ -46,6 +68,32 @@ const SurveyResult: React.FC = () => {
     return () => setLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const renderQuestionResults = (question: RequestQuestion) => {
+    const questionResults = Object.keys(surveyData?.resultsData[question.id]!).map(resultKey => surveyData?.resultsData[question.id][Number(resultKey)]! + 30);
+    const labels = questionResults.map((_result, index) => index + 1 + ".");
+    const data = {
+      labels,
+      datasets: [
+        {
+          data: questionResults,
+          backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        }
+      ]
+    }
+
+    return (
+      <div className="flex flex-col mt-2" key={question.id}>
+        <div className="mb-2">{question.content}</div>
+        <div className="flex flex-col pl-6 mb-2">
+          {question.possibleAnswers.map((possibleAnswer, index) => 
+            <div>{index + 1 + ". "}{possibleAnswer.content}</div>
+          )}
+        </div>
+        <Bar options={chartOptions} data={data} />
+      </div>
+    );
+  }
 
   return (
     <Container>
@@ -60,15 +108,27 @@ const SurveyResult: React.FC = () => {
         (error ? 
         <div>{error}</div> :
         <div className="flex flex-col">
-          Share survey with this link:
-          <div className="flex flex-row gap-x-4">
-            <div className="cursor-pointer" onClick={(e) => handleLinkClick(e)}>
-              {surveyLink}
+          <div className="flex flex-col mb-6">
+            <div className="text-4xl font-bold mb-2">{surveyData?.surveyTemplate?.title}</div>
+            <div className="text-xl font-normal">{surveyData?.surveyTemplate?.description}</div>
+          </div>
+          <div className="flex flex-col mb-6">
+            Share survey with this link:
+            <div className="flex flex-row gap-x-4">
+              <div className="cursor-pointer" onClick={(e) => handleLinkClick(e)}>
+                {surveyLink}
+              </div>
+              <div className={`invisible flex flex-row text-[#33ea30] gap-x-2 transition-opacity ease-in duration-1000 opacity-100 ${ linkCopied && "!visible !opacity-0" }`}>
+                Link Copied!
+                <CheckCircleIcon />
+              </div> 
             </div>
-            <div className={`invisible flex flex-row text-[#33ea30] gap-x-2 transition-opacity ease-in duration-1000 opacity-100 ${ linkCopied && "!visible !opacity-0" }`}>
-              Link Copied!
-              <CheckCircleIcon />
-            </div> 
+          </div>
+          <div className="flex flex-col">
+            <div className="text-4xl font-bold">Closed questions answer results</div>
+            {surveyData?.surveyTemplate.questions.filter(question => question.type !== QuestionType.OPEN).map(question => 
+              renderQuestionResults(question)
+            )}
           </div>
         </div>)}
       </ContainerContent>

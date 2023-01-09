@@ -8,11 +8,13 @@ import { SurveyAnswer } from "../entities/SurveyAnswer";
 import { QuestionAnswer } from "../entities/QuestionAnswer";
 import jwtDecode from "jwt-decode";
 import { User } from "../entities/User";
+import { In } from "typeorm";
 
 const surveyRepository = AppDataSource.getRepository(Survey);
 const questionRepository = AppDataSource.getRepository(Question);
 const answerRepository = AppDataSource.getRepository(PossibleAnswer);
-const surveyAnswerRepoository = AppDataSource.getRepository(SurveyAnswer);
+const surveyAnswerRepository = AppDataSource.getRepository(SurveyAnswer);
+const questionAnswersRepository = AppDataSource.getRepository(QuestionAnswer);
 const userRepository = AppDataSource.getRepository(User);
 
 interface RequestPossibleAnswers {
@@ -80,7 +82,7 @@ const getSurvey = async (req: Request, res: Response) => {
 
     const reqUserEmail = (jwtDecode(req.body.jwt) as { email: string })?.email;
     const reqUser = await userRepository.findOneBy({ email: reqUserEmail });
-    const surveyAnswer = await surveyAnswerRepoository.findOneBy({ surveyId: surveyId, userId: reqUser?.id  });
+    const surveyAnswer = await surveyAnswerRepository.findOneBy({ surveyId: surveyId, userId: reqUser?.id  });
 
     if (!!surveyAnswer) {
       return res.status(200).json({ error: "You have already answered this survey!" }); 
@@ -134,15 +136,46 @@ const answerSurvey = async (req: Request, res: Response) => {
 const getSurveyResults = async (req: Request, res: Response) => {
   try {
     const hash = req.body.hash.split("_");
-    const surveyId = decryptSurveyId({iv: hash[0], content: hash[1]});
+    const surveyId = decryptSurveyId({ iv: hash[0], content: hash[1] });
     
     const survey = await surveyRepository.findOneBy({ id: surveyId });
 
+    if (!survey?.id) {
+      return res.status(200).json({ error: "Sorry, survey not found!" });
+    }
+    
     if (survey?.ownerId !== req.body.userId) {
-      return res.status(200).json({ error: "Sorry, only author of this survey can view its results!" });
+      return res.status(200).json({ error: "Sorry, survey not found!" });
+      // return res.status(200).json({ error: "Sorry, only author of this survey can view its results!" });
     }
 
-    return res.status(200).end();
+    const surveyQuestions = await questionRepository.findBy({ surveyId: survey.id });
+    const surveyAnswers = await surveyAnswerRepository.findBy({ surveyId: survey.id }); 
+    const surveyAnswerIds = surveyAnswers.map(answer => answer.id);
+    const questionAnswers = await questionAnswersRepository.find({where: { surveyAnswerId: In(surveyAnswerIds) }});
+
+    let surveyTemplate: SurveyRequestBody = { ...survey, questions: [] };
+    let surveyResults: {[key: number]: {[key: number]: number}} = {};
+
+    for (const question of surveyQuestions) {
+      surveyTemplate.questions.push({ ...question, possibleAnswers: [] });
+      const answers = await answerRepository.findBy({ questionId: question.id });
+
+      surveyResults[question.id] = {}
+
+      for (const answer of answers) {
+        surveyTemplate.questions[surveyTemplate.questions.length - 1].possibleAnswers.push({ id: answer.id, content: answer.content });
+        surveyResults[question.id][answer.id] = 0;
+      }
+    }
+
+    for (const questionAnswer of questionAnswers) {
+      if (!!questionAnswer.possibleAnswerId) {
+        surveyResults[questionAnswer.questionId][questionAnswer.possibleAnswerId] = surveyResults[questionAnswer.questionId][questionAnswer.possibleAnswerId] + 1;
+      }
+    }
+
+    return res.status(200).json({ surveyTemplate: surveyTemplate, resultsData: surveyResults });
   } catch (error) {
     return res.status(500).json({error});
   }

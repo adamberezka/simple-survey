@@ -60,7 +60,6 @@ const BrowseLogs: React.FC = () => {
         if (!logs || !logs.length) {
             return <div className="min-h-full">Sorry, no logs were found :(</div>
         }
-        console.log(logs);
         return logs.map(log => {
             return <div className="flex flex-row gap-x-1 pr-4">
                 <div className="text-[#ffd439]">{new Date(log.timestamp).toLocaleString()} - </div>

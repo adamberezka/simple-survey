@@ -15,7 +15,7 @@ const Login: React.FC<{userLoggedIn: boolean}> = ({
 
 	function handleLoginResponse(googleResponse: {credential: string}) {
 		loginUser(googleResponse.credential).then( (apiResponse) => {
-			console.log(apiResponse)
+			// console.log(apiResponse)
 				if(apiResponse.status === 200) {
 					const userData = {
 						jwt: googleResponse.credential, 

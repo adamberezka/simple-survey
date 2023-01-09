@@ -13,6 +13,24 @@ import SurveyResult from './pages/SurveyResult';
 import Sidebar from './components/Sidebar';
 import { useSelector } from 'react-redux';
 import { ReduxState } from './types/Types';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const App: React.FC = () => {
   const user = useSelector((state: ReduxState) => state.user);

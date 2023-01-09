@@ -26,7 +26,7 @@ const Surveys: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    getUserSurveys(user.id, user.jwt)
+    getUserSurveys(user?.id, user?.jwt)
       .then(res => {
         setUserSurveys([...res.data.surveys]);
         setLoading(false);
@@ -53,7 +53,7 @@ const Surveys: React.FC = () => {
               Loading your surveys...
             </div>
           </div>) : 
-          userSurveys.map(survey => 
+          !!userSurveys.length ? userSurveys.map(survey => 
             <SurveyMinature 
               key={survey.id}
               title={survey.title}
@@ -61,7 +61,9 @@ const Surveys: React.FC = () => {
               closeDate={survey.closeDate}
               onClick={() => navigate(`/survey-result/${survey.hash}`)}
             />  
-          )}
+          ) :
+          <div>You have got no open surveys</div>
+        }
         </div>
       </ContainerContent>
 
