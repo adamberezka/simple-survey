@@ -41,6 +41,10 @@ const loginUser = async (req: Request, res: Response) => {
 const getLogs = async (req: Request, res: Response) => {
   try {
     const logs = await readLogs(req.body.from, req.body.to, req.body.allLogs ? './default-logs' : './login-logs');
+
+    console.log("sent logs: ", logs);
+    
+
     return res.status(200).json(logs);
   } catch (error) {
     return res.status(500).json({error});

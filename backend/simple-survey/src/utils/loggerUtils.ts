@@ -55,6 +55,8 @@ const loginLogger = winston.createLogger({
 const readLogs = async (from: Date, to: Date, logsPath: string) => {
   const { promises: fs } = require('fs');
 
+  console.log("from, to, path: ", from, to, logsPath);
+
   try {
     const fromTs = new Date(from).getTime();
     const toTs = new Date(to).getTime();
@@ -63,22 +65,26 @@ const readLogs = async (from: Date, to: Date, logsPath: string) => {
 
     logFiles = logFiles.filter((file: string) => {
       const fileTs = new Date(file.split(".")[1]).getTime();
-
-      return fileTs >= fromTs && fileTs <= toTs
+      
+      return fileTs >= fromTs && fileTs <= toTs;
     });
-
+    
+    console.log("logFiles: ", logFiles);
+    
     let data: string[] = [];
     
     for (const log of logFiles) {
       let logData = await fs.readFile(`${logsPath}/${log}`, 'utf-8');
-
+      
       logData = logData.split("\n");
       logData = logData.map((log: string) => log.substring(0, log.length - 1));
       logData.pop();
       logData = logData.map((log: string) => JSON.parse(log));
-
+      
       data.push(...logData);
     }
+
+    console.log("end data: ", data);
 
     return data;
   } catch (err) {
