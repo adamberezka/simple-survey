@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { SurveyAnswerRequest, SurveyRequestBody } from '../types/Types';
 
-// const hostUrl = "";
-const hostUrl = "http://localhost:8080";
+// const hostUrl = "http://localhost:8080";
+const hostUrl = "https://simple-survey-backend.herokuapp.com";
 
 const loginUrl = hostUrl + "/user/login";
 const surveyUrl = hostUrl + "/surveys";
