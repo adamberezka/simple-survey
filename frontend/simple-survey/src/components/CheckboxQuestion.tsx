@@ -1,4 +1,4 @@
-import { FocusEventHandler } from "react";
+import React from "react";
 import { RequestPossibleAnswers } from "../types/Types";
 import PossibleAnswer from "./PossibleAnswer";
 import Question from "./Question";

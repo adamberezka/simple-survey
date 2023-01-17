@@ -1,4 +1,4 @@
-import React, { FocusEventHandler, useState } from 'react';
+import React from 'react';
 import TextArea from './TextArea';
 
 interface QuestionProps {

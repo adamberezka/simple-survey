@@ -1,7 +1,5 @@
-import { FocusEventHandler } from "react";
-import { RequestQuestion } from "../types/Types";
+import React from "react";
 import Question from "./Question";
-import TextArea from "./TextArea";
 
 interface OpenQuestionProps {
   title: string,
