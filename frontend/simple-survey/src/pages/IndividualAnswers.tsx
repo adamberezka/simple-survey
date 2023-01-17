@@ -18,7 +18,7 @@ const IndividualAnswers: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [next, setNext] = useState<number>(0);
   const [page, setPage] = useState<number>(0);
-  const [surveyAnswers, setSurveyAnswers] = useState<[[]]>();
+  const [surveyAnswers, setSurveyAnswers] = useState<[][]>();
   const [totalAnswers, setTotalAnswers] = useState<number>();
   const surveyTemplate = location?.state?.surveyTemplate;
 
@@ -29,27 +29,40 @@ const IndividualAnswers: React.FC = () => {
       if (res.data.error) {
         setError(error);
         setLoading(false);
+      } else {
+        setSurveyAnswers(res.data.surveyData.answers);
+        setTotalAnswers(res.data.surveyData.totalAnswers);
+        setNext(1);
+        setLoading(false);
       }
-      setSurveyAnswers(res.data.surveyData.answers);
-      setTotalAnswers(res.data.surveyData.totalAnswers);
-      setLoading(false);
     })
     .catch(err => console.log(err));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   
-  const handlePageChange = () => {
-    
+  const handlePageChange = (value: number) => {
+    if (page + 1 + value > surveyAnswers?.length!) {
+      setLoading(true);
+      getIndividualAnswers(user.jwt, match?.params.hash!, next)
+      .then(res => {
+        if (res.data.error) {
+          setError(error);
+          setLoading(false);
+        } else {
+          setSurveyAnswers([ ...surveyAnswers!, ...res.data.surveyData.answers ]);
+          setNext(next + 1);
+          setLoading(false);
+        }
+      })
+      .catch(err => console.log(err));
+    }
+    setPage(page + value);
   }
-
-  console.log(surveyTemplate);
-  console.log(surveyAnswers);
-  
 
   return (
     <Container>
       <ContainerContent className="px-16">
-        {loading || !surveyAnswers?.length || !surveyTemplate ? 
+        {loading || !surveyAnswers?.length || !surveyAnswers[page] || !surveyTemplate ? 
         (<div className="w-full h-full flex justify-center items-center">
           <div className="flex flex-col justify-center items-center">
             <Loading />
@@ -59,14 +72,14 @@ const IndividualAnswers: React.FC = () => {
         (error ? 
         <div>{error}</div> :
         <div className="flex flex-col gap-y-6">
-          <div className="fixed top-1/2 left-[275px] group flex flex-col justify-center items-center cursor-pointer">
+          {page !== 0 && <div className="fixed top-1/2 left-[275px] group flex flex-col justify-center items-center cursor-pointer" onClick={() => handlePageChange(-1)}>
             <ArrowLeftIcon className="h-8 w-8"/>
             <div className="invisible group-hover:visible">Previous</div>
-          </div>
-          <div className="fixed top-1/2 right-[10px] group flex flex-col justify-center items-center cursor-pointer">
+          </div>}
+          {page + 1 < totalAnswers! && <div className="fixed top-1/2 right-[10px] group flex flex-col justify-center items-center cursor-pointer" onClick={() => handlePageChange(1)}>
             <ArrowRightIcon className="h-8 w-8"/>
             <div className="invisible group-hover:visible">Next</div>
-          </div>
+          </div>}
           <div>Answer {page + 1} of {totalAnswers}</div>
           <div className="flex flex-col gap-y-2">
             {surveyAnswers[page].map((questionAnswer: {questionId: number, possibleAnswerId: number | string, content: string}) => {
