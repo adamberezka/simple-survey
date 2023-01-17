@@ -58,7 +58,7 @@ const readLogs = async (from: Date, to: Date, logsPath: string) => {
   try {
     const fromTs = new Date(from).getTime();
     const toTs = new Date(to).getTime();
-
+    
     let logFiles: string[] = await fs.readdir(logsPath);
 
     logFiles = logFiles.filter((file: string) => {

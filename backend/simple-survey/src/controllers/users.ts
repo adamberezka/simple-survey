@@ -40,7 +40,8 @@ const loginUser = async (req: Request, res: Response) => {
 
 const getLogs = async (req: Request, res: Response) => {
   try {
-    return res.status(200).json(await readLogs(req.body.from, req.body.to, req.body.allLogs ? './default-logs' : './login-logs'));
+    const logs = await readLogs(req.body.from, req.body.to, req.body.allLogs ? './default-logs' : './login-logs');
+    return res.status(200).json(logs);
   } catch (error) {
     return res.status(500).json({error});
   }
@@ -53,7 +54,7 @@ const donwloadLogs = async (req: Request, res: Response) => {
 
   const zip = new JSZip();
 
-  const user: { email: string, name: string } = jwtDecode(req.body.jwt);
+  // const user: { email: string, name: string } = jwtDecode(req.body.jwt);
   const fileName = "temp_logs.zip";
 
   try {
