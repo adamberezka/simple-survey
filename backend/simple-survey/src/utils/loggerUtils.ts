@@ -80,7 +80,7 @@ const readLogs = async (from: Date, to: Date, logsPath: string) => {
 
       logData = logData.split("\n");
       logData = logData.map((log: string) => log.substring(0, log.length));
-      // logData.pop();
+      logData.pop();
 
       console.log("logData: ", logData);
       
