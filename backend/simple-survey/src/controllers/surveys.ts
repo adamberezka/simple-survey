@@ -205,8 +205,6 @@ const getIndividualSurveyAnswers = async (req: Request, res: Response) => {
       const questionAnswers = await questionAnswersRepository.findBy({surveyAnswerId: surveyAnswer.id});
       surveyData.answers.push([ ...questionAnswers ]);
     }
-
-    console.log(surveyData.answers);
     
     return res.status(200).json({ surveyData });
   } catch (error) {

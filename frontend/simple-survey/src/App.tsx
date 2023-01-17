@@ -23,6 +23,7 @@ import {
   Legend,
 } from 'chart.js';
 import IndividualAnswers from './pages/IndividualAnswers';
+import ErrorPage from './pages/ErrorPage';
 
 ChartJS.register(
   CategoryScale,
@@ -37,7 +38,7 @@ const App: React.FC = () => {
   const user = useSelector((state: ReduxState) => state.user);
 
   return (
-    <ErrorBoundary onError={(error) => console.error(error)} fallback={(<div>ERROR</div>)}>
+    <ErrorBoundary onError={(error) => console.error(error)} fallback={<ErrorPage />}>
       <Router>
         <DataWrapper>
           {user && <Sidebar username={user.username} email={user.email} imgUrl={user.imageUrl} isAdmin={user.isAdmin}/>}

@@ -10,6 +10,40 @@ import { QuestionType, ReduxState } from "../types/Types";
 import { ReactComponent as ArrowLeftIcon } from "../icons/ArrowLeft.svg"; 
 import { ReactComponent as ArrowRightIcon } from "../icons/ArrowRight.svg"; 
 
+const normalizeAnswers: (answers: []) => {questionId: number, possibleAnswerId: number | number[]}[] = (answers: {questionId: number, possibleAnswerId: number}[]) => {
+  
+  let tempAnswers: {questionId: number, possibleAnswerId: number | number[]}[] = [];
+  let counts: {[key: number]: number} = {};
+
+  for (const questionAnswer of answers) {
+    counts[questionAnswer.questionId] = counts[questionAnswer.questionId] ? counts[questionAnswer.questionId] + 1 : 1;
+  }
+
+  answers.forEach(questionAnswer => {
+    if (counts[questionAnswer.questionId] === 1 || !tempAnswers.some(answer => answer.questionId === questionAnswer.questionId)) {
+      tempAnswers.push(questionAnswer);
+    }
+  });
+
+  tempAnswers = tempAnswers.map(questionAnswer => {
+    if (counts[questionAnswer.questionId] > 1) {
+      let possibleAnswers: number[] = [];
+      
+      answers.forEach(individualAnswer => {
+        if (individualAnswer.questionId === questionAnswer.questionId) {
+          possibleAnswers.push(individualAnswer.possibleAnswerId);
+        }
+      });
+      
+      return { ...questionAnswer, possibleAnswerId: possibleAnswers };
+    }
+
+    return questionAnswer;
+  });
+
+  return tempAnswers;
+}
+
 const IndividualAnswers: React.FC = () => {
   const user = useSelector((state: ReduxState) => state.user);
   const match = useMatch("/individual-answers/:hash");
@@ -30,7 +64,9 @@ const IndividualAnswers: React.FC = () => {
         setError(error);
         setLoading(false);
       } else {
-        setSurveyAnswers(res.data.surveyData.answers);
+        let answers = res.data.surveyData.answers.map((answers: any) => normalizeAnswers(answers));
+
+        setSurveyAnswers(answers);
         setTotalAnswers(res.data.surveyData.totalAnswers);
         setNext(1);
         setLoading(false);

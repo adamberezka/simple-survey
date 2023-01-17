@@ -72,7 +72,7 @@ const SurveyResult: React.FC = () => {
   }, []);
 
   const renderQuestionResults = (question: RequestQuestion) => {
-    const questionResults = Object.keys(surveyData?.resultsData[question.id]!).map(resultKey => surveyData?.resultsData[question.id][Number(resultKey)]! + 30);
+    const questionResults = Object.keys(surveyData?.resultsData[question.id]!).map(resultKey => surveyData?.resultsData[question.id][Number(resultKey)]);
     const labels = questionResults.map((_result, index) => index + 1 + ".");
     const data = {
       labels,

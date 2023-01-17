@@ -156,7 +156,7 @@ const SurveyAnswer: React.FC = () => {
         <div>
           {error}
         </div> :
-        <div className="w-full max-w-[1024px] px-6">
+        <div className="w-full px-6">
           {!!surveyData && 
             <section className="mt-10 w-full">
               <div className="text-4xl font-bold mb-2">
