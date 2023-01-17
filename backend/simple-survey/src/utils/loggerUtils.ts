@@ -76,10 +76,15 @@ const readLogs = async (from: Date, to: Date, logsPath: string) => {
     for (const log of logFiles) {
       let logData = await fs.readFile(`${logsPath}/${log}`, 'utf-8');
       
+      console.log("log data from fs.readFile: ", logData);
+
       logData = logData.split("\n");
       logData = logData.map((log: string) => log.substring(0, log.length - 1));
       logData.pop();
-      logData = logData.map((log: string) => JSON.parse(log));
+
+      console.log("logData: ", logData);
+      
+      logData = logData.map((log: string) => {console.log("log: ", log); return JSON.parse(log)});
       
       data.push(...logData);
     }
