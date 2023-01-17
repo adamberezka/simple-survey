@@ -13,5 +13,6 @@ RUN npm install --silent
 COPY . ./
 
 # start app
+RUN npm run build
 RUN npm install -g serve
 CMD [ "serve", "-s", "build" ]
