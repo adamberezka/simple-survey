@@ -79,7 +79,7 @@ const readLogs = async (from: Date, to: Date, logsPath: string) => {
       console.log("log data from fs.readFile: ", logData);
 
       logData = logData.split("\n");
-      logData = logData.map((log: string) => log.substring(0, log.length - 1));
+      logData = logData.map((log: string) => log.substring(0, log.length));
       // logData.pop();
 
       console.log("logData: ", logData);
