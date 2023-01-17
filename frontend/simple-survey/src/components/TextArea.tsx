@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FocusEventHandler, useState } from "react";
+import React, { FocusEventHandler } from "react";
 import TextareaAutosize from 'react-textarea-autosize';
 
 interface TextAreaProps {

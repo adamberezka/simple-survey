@@ -9,9 +9,9 @@ export const setUser = (user: User) => {
     };
 };
 
-export const unsetUser = (user: User) => {
+export const unsetUser = () => {
     return {
        type: UNSET,
-       payload: user
+       payload: null
     };
 };

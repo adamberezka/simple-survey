@@ -37,7 +37,7 @@ const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
           appCache.set('googlePublicKey', null);
           jwt.verify(token, getKey, { algorithms: ['RS256'] }, (err: Error, _decodedToken: Object) => {
             if (err) {
-              loginLogger.log('error', `User with redentials: ${email} : ${name} - verify error: ${err.message}`);
+              loginLogger.log('error', `User with credentials: ${email} : ${name} - verify error: ${err.message}`);
               res.status(403).end();
             } else {
               next();

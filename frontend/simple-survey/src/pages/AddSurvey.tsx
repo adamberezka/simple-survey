@@ -1,11 +1,12 @@
-import React, { FocusEvent, useState } from "react"
+import React, { useState } from "react"
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import CheckBoxQuestion from "../components/CheckboxQuestion";
 import Container from "../components/Container";
+import ContainerContent from "../components/ContainerContent";
+import Loading from "../components/Loading";
 import OpenQuestion from "../components/OpenQuestion";
 import RadioButtonQuestion from "../components/RadioButtonQuestion";
-import Sidebar from "../components/Sidebar";
 import TextArea from "../components/TextArea";
 import { createSurvey } from "../services/BackendService";
 import { QuestionType, ReduxState, RequestQuestion } from "../types/Types";
@@ -64,117 +65,127 @@ const AddSurvey: React.FC = () => {
   const [questions, setQuestionList] = useState<RequestQuestion[]>([]);
   const [title, setTitle] = useState<string>("Survey title");
   const [description, setDescription] = useState<string>("Survey description");
+  const [loading, setLoading] = useState<boolean>(false);
   const {ownerId, jwt} = useSelector<ReduxState, {ownerId: number, jwt: string}>(state => ({ownerId: state.user?.id, jwt: state.user?.jwt}));
   const navigate = useNavigate();
 
   const surveyValid = isSurveyValid(questions);
   
   const handleSubmit = () => {
+    setLoading(true);
     createSurvey({ownerId, title, description, questions}, jwt)
       .then(_res => {
         navigate("/surveys");
+        setLoading(false);
       })
       .catch(err => console.log(err));
   }
 
   return (
-    <Container className="bg-body-text w-screen h-screen">
-      <Sidebar />
-      
-      <div className="h-[90%] w-[90%] m-10 py-6 px-12 shadow-lg border-0 border-[#bbbbbb] bg-white rounded-2xl overflow-y-scroll">
-        <div className="mb-6">
-          <TextArea 
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Survey title"
-            inputClassName="text-4xl font-bold mb-2 outline-none border-0"
-          />
-          <TextArea 
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Survey description"
-            inputClassName="text-xl font-normal mb-2 outline-none border-0"
-          />
-        </div>
-        <div>
-          <div className="flex flex-col w-full gap-y-4">
-            {questions.map((question, index) => {
-              
-              if (question.type === QuestionType.OPEN)
-                return <OpenQuestion 
-                  key={index}
-                  index={index}
-                  content={question.content} deleteQuestion={() => deleteQuestion(index, setQuestionList, questions)} 
-                  title={question.type}
-                  updateQuestion={updateQuestion(index, setQuestionList, questions)}
-                />
-
-              if (question.type === QuestionType.CHECKBOX)
-                return <CheckBoxQuestion
-                  key={index}
-                  index={index} 
-                  content={question.content} deleteQuestion={() => deleteQuestion(index, setQuestionList, questions)} 
-                  title={question.type}
-                  answers={question.possibleAnswers}
-                  addAnswer={() => addAnswer(index, setQuestionList, questions)}
-                  updateQuestion={updateQuestion(index, setQuestionList, questions)}
-                  deleteAnswer={deleteAnswer(index, setQuestionList, questions)}
-                  updateAnswer={updateAnswer(index, setQuestionList, questions)}
-                />
-
-              if (question.type === QuestionType.RADIO)
-                return <RadioButtonQuestion 
-                  key={index}
-                  index={index}
-                  content={question.content} deleteQuestion={() => deleteQuestion(index, setQuestionList, questions)} 
-                  title={question.type}
-                  answers={question.possibleAnswers}
-                  addAnswer={() => addAnswer(index, setQuestionList, questions)}
-                  updateQuestion={updateQuestion(index, setQuestionList, questions)}
-                  deleteAnswer={deleteAnswer(index, setQuestionList, questions)}
-                  updateAnswer={updateAnswer(index, setQuestionList, questions)}
-                />
-            }
-            )}
+    <Container>
+      <ContainerContent>
+        {loading ? 
+        (<div className="w-full h-full flex justify-center items-center">
+          <div className="flex flex-col justify-center items-center">
+            <Loading />
+            Submitting your survey, please wait...
           </div>
-          <div className="w-full flex flex-row justify-center mt-4">
-            <div 
-              className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#25ea3f] rounded-2xl text-center w-60 h-8 font-semibold" 
-              onClick={() => addQuestion(QuestionType.OPEN, setQuestionList, questions)}
-            >
-              + Add Open Question
-            </div>
-
-            <div 
-              className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#25ea3f] rounded-2xl text-center w-60 h-8 font-semibold" 
-              onClick={() => addQuestion(QuestionType.CHECKBOX, setQuestionList, questions)}
-            >
-              + Add Checkbox Question
-            </div>
-
-            <div 
-              className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#25ea3f] rounded-2xl text-center w-60 h-8 font-semibold" 
-              onClick={() => addQuestion(QuestionType.RADIO, setQuestionList, questions)}
-            >
-              + Add Radio Button Question
-            </div>
+        </div>) :
+        <>
+          <div className="mb-6">
+            <TextArea 
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Survey title"
+              inputClassName="text-4xl font-bold mb-2 outline-none border-0"
+            />
+            <TextArea 
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Survey description"
+              inputClassName="text-xl font-normal mb-2 outline-none border-0"
+            />
           </div>
-        </div>
-        
-        {!!questions.length && 
-        <div className="flex justify-center items-center mt-4"> 
-          <div className={surveyValid ? "cursor-pointer" : "cursor-not-allowed"}>
-            <div 
-              className={`text-xl flex-grow-0 rounded-2xl bg-primary text-white px-12 py-2 select-none ${!surveyValid && "pointer-events-none"}`} 
-              onClick={() => handleSubmit()}
-            >
-              Submit survey
+          <div>
+            <div className="flex flex-col w-full gap-y-4">
+              {// eslint-disable-next-line array-callback-return
+              questions.map((question, index) => {
+                
+                if (question.type === QuestionType.OPEN)
+                  return <OpenQuestion 
+                    key={index}
+                    index={index}
+                    content={question.content} deleteQuestion={() => deleteQuestion(index, setQuestionList, questions)} 
+                    title={question.type}
+                    updateQuestion={updateQuestion(index, setQuestionList, questions)}
+                  />
+
+                if (question.type === QuestionType.CHECKBOX)
+                  return <CheckBoxQuestion
+                    key={index}
+                    index={index} 
+                    content={question.content} deleteQuestion={() => deleteQuestion(index, setQuestionList, questions)} 
+                    title={question.type}
+                    answers={question.possibleAnswers}
+                    addAnswer={() => addAnswer(index, setQuestionList, questions)}
+                    updateQuestion={updateQuestion(index, setQuestionList, questions)}
+                    deleteAnswer={deleteAnswer(index, setQuestionList, questions)}
+                    updateAnswer={updateAnswer(index, setQuestionList, questions)}
+                  />
+
+                if (question.type === QuestionType.RADIO)
+                  return <RadioButtonQuestion 
+                    key={index}
+                    index={index}
+                    content={question.content} deleteQuestion={() => deleteQuestion(index, setQuestionList, questions)} 
+                    title={question.type}
+                    answers={question.possibleAnswers}
+                    addAnswer={() => addAnswer(index, setQuestionList, questions)}
+                    updateQuestion={updateQuestion(index, setQuestionList, questions)}
+                    deleteAnswer={deleteAnswer(index, setQuestionList, questions)}
+                    updateAnswer={updateAnswer(index, setQuestionList, questions)}
+                  />
+              }
+              )}
+            </div>
+            <div className="w-full flex flex-row justify-center mt-4">
+              <div 
+                className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#25ea3f] rounded-2xl text-center w-60 h-8 font-semibold" 
+                onClick={() => addQuestion(QuestionType.OPEN, setQuestionList, questions)}
+              >
+                + Add Open Question
+              </div>
+
+              <div 
+                className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#25ea3f] rounded-2xl text-center w-60 h-8 font-semibold" 
+                onClick={() => addQuestion(QuestionType.CHECKBOX, setQuestionList, questions)}
+              >
+                + Add Checkbox Question
+              </div>
+
+              <div 
+                className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#25ea3f] rounded-2xl text-center w-60 h-8 font-semibold" 
+                onClick={() => addQuestion(QuestionType.RADIO, setQuestionList, questions)}
+              >
+                + Add Radio Button Question
+              </div>
             </div>
           </div>
-        </div>
-        }
-      </div>
-
+          
+          {!!questions.length && 
+          <div className="flex justify-center items-center mt-4"> 
+            <div className={surveyValid ? "cursor-pointer" : "cursor-not-allowed"}>
+              <div 
+                className={`text-xl flex-grow-0 rounded-2xl bg-primary text-white px-12 py-2 select-none ${!surveyValid && "pointer-events-none"}`} 
+                onClick={() => handleSubmit()}
+              >
+                Submit survey
+              </div>
+            </div>
+          </div>
+          }
+        </>}
+      </ContainerContent>
     </Container>
   );
 }

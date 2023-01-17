@@ -1,18 +1,21 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Container from "../components/Container";
 import { setUser } from "../redux/User/user.actions";
 import { loginUser } from "../services/BackendService";
 
-const Login: React.FC = () => {
+const Login: React.FC<{userLoggedIn: boolean}> = ({
+	userLoggedIn
+}) => {
 	const navigate = useNavigate();
+	const location = useLocation();
 	const dispatch = useDispatch();
 
 	function handleLoginResponse(googleResponse: {credential: string}) {
 		loginUser(googleResponse.credential).then( (apiResponse) => {
-			console.log(apiResponse)
+			// console.log(apiResponse)
 				if(apiResponse.status === 200) {
 					const userData = {
 						jwt: googleResponse.credential, 
@@ -25,16 +28,23 @@ const Login: React.FC = () => {
 
 					localStorage.setItem('userData', JSON.stringify(userData));
 
-					dispatch(setUser(userData))
+					dispatch(setUser(userData));
 
-					navigate("/surveys");
+					if (location.state && location.state.redirectToSurvey && location.state.surveyHash) {
+						navigate(`/surveys/${location.state.surveyHash}`);
+					} else {
+						navigate("/surveys");
+					}
 				} else {
-					navigate("/login")
+					navigate("/login");
 				}
 		});
 	}
 
 	useEffect(() => {
+		if (userLoggedIn) {
+			navigate("/surveys");
+		}
 		// @ts-ignore
 		google.accounts.id.initialize({
 			client_id: "502580724225-j05b06b81p3rfk626ino46dqgor4rofm.apps.googleusercontent.com",
@@ -46,7 +56,8 @@ const Login: React.FC = () => {
 			document.getElementById("googleLogin"),
 			{theme: "outline", size: "large", width: "240"}
 		);
-	}, [])
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<Container className="bg-primary w-screen h-screen">

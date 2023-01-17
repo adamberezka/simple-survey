@@ -1,5 +1,5 @@
 import React from "react"
-import { QuestionAnswerRequest, QuestionType, RequestPossibleAnswers, RequestQuestion } from "../types/Types";
+import { QuestionType, RequestPossibleAnswers, RequestQuestion } from "../types/Types";
 import CheckboxAnswer from "./CheckboxAnswer";
 import OpenAnswer from "./OpenAnswer";
 import RadioAnswer from "./RadioAnswer";

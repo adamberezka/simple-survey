@@ -13,4 +13,7 @@ export const createSurvey = (survey: SurveyRequestBody, jwt: string) => axios.po
 export const getUserSurveys = (userId: number, jwt: string) => axios.post(surveyUrl + "/user-surveys", { userId, jwt });
 export const getSurvey = (hash: string, jwt: string) => axios.post(surveyUrl + "/get", { hash, jwt });
 export const answerSurvey = (surveyData: SurveyAnswerRequest) => axios.post(surveyUrl + "/answer", { ...surveyData });
-export const getLogs = (jwt: string, from: Date, to: Date, allLogs: boolean) => axios.post(logsUrl, {jwt: jwt, from: from, to: to, allLogs: allLogs});
+export const getLogs = (jwt: string, from: Date, to: Date, allLogs: boolean) => axios.post(logsUrl, {jwt, from, to, allLogs});
+export const getSurveyResults = (jwt: string, userId: number, hash: string) => axios.post(surveyUrl + "/survey-results", {jwt, userId, hash});
+export const downloadZippedLogs = (jwt: string, from: Date, to: Date, allLogs: boolean) => axios.post(hostUrl + "/user/download-logs", {jwt, from, to, allLogs}, {method: 'POST', responseType: 'blob'});
+export const getIndividualAnswers = (jwt: string, hash: string, next: number) => axios.post(surveyUrl + "/individual-answers", {jwt, hash, next});

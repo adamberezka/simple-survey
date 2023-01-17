@@ -10,18 +10,44 @@ import {ErrorBoundary} from 'react-error-boundary'
 import DataWrapper from './components/DataWrapper';
 import BrowseLogs from './pages/BrowseLogs';
 import SurveyResult from './pages/SurveyResult';
+import Sidebar from './components/Sidebar';
+import { useSelector } from 'react-redux';
+import { ReduxState } from './types/Types';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import IndividualAnswers from './pages/IndividualAnswers';
 
-const  App: React.FC = () => {
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const App: React.FC = () => {
+  const user = useSelector((state: ReduxState) => state.user);
+
   return (
     <ErrorBoundary onError={(error) => console.error(error)} fallback={(<div>ERROR</div>)}>
       <Router>
         <DataWrapper>
+          {user && <Sidebar username={user.username} email={user.email} imgUrl={user.imageUrl} isAdmin={user.isAdmin}/>}
           <Routes>
-            <Route path="/login" element={<Login/>} />
+            <Route path="/login" element={<Login userLoggedIn={!!user}/>} />
             <Route path="/surveys/:hash" element={<SurveyAnswer/>} />
             <Route path="/surveys" element={<Surveys/>} />
             <Route path="/add-survey" element={<AddSurvey/>} />
-            <Route path="/survey-result/:hash" element={<SurveyResult/>} />
+            <Route path="/survey-result/:hash" element={<SurveyResult />} />
+            <Route path="/individual-answers/:hash" element={<IndividualAnswers />} />
             <Route path="/logs" element={<BrowseLogs/>} />
             <Route path="/" element={<Navigate to="/login"/>}/>
             <Route path="*" element={<NotFound />}/>
