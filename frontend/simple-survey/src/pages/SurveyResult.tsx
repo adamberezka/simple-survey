@@ -92,7 +92,7 @@ const SurveyResult: React.FC = () => {
             <div>{index + 1 + ". "}{possibleAnswer.content}</div>
           )}
         </div>
-        <Bar options={chartOptions} data={data} />
+        <Bar options={chartOptions} data={data} height="80%"/>
       </div>
     );
   }
