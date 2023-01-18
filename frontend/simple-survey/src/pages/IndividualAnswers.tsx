@@ -10,7 +10,7 @@ import { QuestionType, ReduxState } from "../types/Types";
 import { ReactComponent as ArrowLeftIcon } from "../icons/ArrowLeft.svg"; 
 import { ReactComponent as ArrowRightIcon } from "../icons/ArrowRight.svg"; 
 
-const normalizeAnswers: (answers: []) => {questionId: number, possibleAnswerId: number | number[]}[] = (answers: {questionId: number, possibleAnswerId: number}[]) => {
+const normalizeAnswers: (answers: []) => {questionId: number, possibleAnswerId: number | number[]}[] = (answers: {questionId: number, possibleAnswerId: number | number[]}[]) => {
   
   let tempAnswers: {questionId: number, possibleAnswerId: number | number[]}[] = [];
   let counts: {[key: number]: number} = {};
@@ -31,7 +31,9 @@ const normalizeAnswers: (answers: []) => {questionId: number, possibleAnswerId: 
       
       answers.forEach(individualAnswer => {
         if (individualAnswer.questionId === questionAnswer.questionId) {
-          possibleAnswers.push(individualAnswer.possibleAnswerId);
+          if (individualAnswer.possibleAnswerId instanceof Array<number>) {
+            possibleAnswers.push(individualAnswer.possibleAnswerId[0]);
+          }
         }
       });
       
@@ -64,7 +66,7 @@ const IndividualAnswers: React.FC = () => {
         setError(error);
         setLoading(false);
       } else {
-        let answers = res.data.surveyData.answers.map((answers: any) => normalizeAnswers(answers));
+        const answers = res.data.surveyData.answers.map((answers: any) => normalizeAnswers(answers));
 
         setSurveyAnswers(answers);
         setTotalAnswers(res.data.surveyData.totalAnswers);
@@ -126,6 +128,8 @@ const IndividualAnswers: React.FC = () => {
                   possibleAnswers={question.possibleAnswers}
                   answer={question.type === QuestionType.OPEN ? questionAnswer.content : questionAnswer.possibleAnswerId}
                   updateAnswer={() => null}
+                  disabled={true}
+                  key={question.id}
                 />
             }  
             )}

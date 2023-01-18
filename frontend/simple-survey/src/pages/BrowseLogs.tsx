@@ -5,9 +5,8 @@ import DropDownMenu from "../components/DropDownMenu";
 import { downloadZippedLogs, getLogs } from "../services/BackendService";
 import { Log, ReduxState } from "../types/Types";
 import DatePicker from "react-datepicker";
-
-import "react-datepicker/dist/react-datepicker.css";
 import ContainerContent from "../components/ContainerContent";
+import "react-datepicker/dist/react-datepicker.css";
 
 enum LogType {
     ALL_LOGS = "All Logs",
@@ -73,7 +72,7 @@ const BrowseLogs: React.FC = () => {
     <Container>
         <ContainerContent className="flex flex-col max-h-[94vh]">
             <div className="flex flex-row gap-x-5 items-center">
-                <DropDownMenu className="w-24" items={[LogType.LOGIN_LOGS, LogType.ALL_LOGS]} 
+                <DropDownMenu className="w-32" items={[LogType.LOGIN_LOGS, LogType.ALL_LOGS]} 
                     onChange={onLogSelect}/>
                 <div className="text-center p-1">FROM: </div> 
                 <div className="content-center p-1">

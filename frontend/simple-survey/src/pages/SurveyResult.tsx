@@ -89,7 +89,7 @@ const SurveyResult: React.FC = () => {
         <div className="mb-2">{question.content}</div>
         <div className="flex flex-col pl-6 mb-2">
           {question.possibleAnswers.map((possibleAnswer, index) => 
-            <div>{index + 1 + ". "}{possibleAnswer.content}</div>
+            <div key={index}>{index + 1 + ". "}{possibleAnswer.content}</div>
           )}
         </div>
         <Bar options={chartOptions} data={data} height="80%"/>

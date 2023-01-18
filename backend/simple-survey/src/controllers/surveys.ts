@@ -181,6 +181,16 @@ const getSurveyResults = async (req: Request, res: Response) => {
   }
 }
 
+type IndividualAnswer = {
+  id: number;
+  questionId: number;
+  possibleAnswerId: number | number[];
+  content: string;
+  userId: number
+  surveyAnswerId: number;
+}
+
+
 const getIndividualSurveyAnswers = async (req: Request, res: Response) => {
   try {
     const hash = req.body.hash.split("_");
@@ -198,12 +208,24 @@ const getIndividualSurveyAnswers = async (req: Request, res: Response) => {
 
     const [_answers, count] = await surveyAnswerRepository.findAndCountBy({ surveyId: surveyId });
     const [surveyAnswers, _count] = await surveyAnswerRepository.findAndCount({where: { surveyId: surveyId }, order: {id: "ASC"}, skip: req.body.next, take: 1}); 
+    const questions = await questionRepository.findBy({ surveyId: surveyId });
 
-    let surveyData: {answers: QuestionAnswer[][], totalAnswers: number} = { answers: [], totalAnswers: count };
+    let surveyData: {answers: IndividualAnswer[][], totalAnswers: number} = { answers: [], totalAnswers: count };
 
     for (const surveyAnswer of surveyAnswers) {
       const questionAnswers = await questionAnswersRepository.findBy({surveyAnswerId: surveyAnswer.id});
-      surveyData.answers.push([ ...questionAnswers ]);
+
+      const mappedAnswers: IndividualAnswer[] = questionAnswers.map(answer => {
+        const question = questions.find(singleQuestion => singleQuestion.id === answer.questionId);
+
+        if (question?.type === QuestionType.CHECKBOX) {
+          return { ...answer, possibleAnswerId: [answer.possibleAnswerId] }
+        }
+
+        return answer;
+      });
+
+      surveyData.answers.push([ ...mappedAnswers ]);
     }
     
     return res.status(200).json({ surveyData });

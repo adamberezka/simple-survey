@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { ReactComponent as ChevronDown } from "../icons/ChevronDown.svg";
 
 interface DropDownMenuProps {
   className?: string,
@@ -67,8 +68,9 @@ const DropDownMenu: React.FC<DropDownMenuProps> = ({
 
   return (
     <div ref={ref} className={`relative ${className}`}>
-      <div className="w-full cursor-pointer border border-solid border-[#000000] text-center p-1" onClick={handleOpen}>
-        {selectedItem}
+      <div className="w-full flex items-center justify-between cursor-pointer border border-solid border-[#000000] text-center py-1 px-2" onClick={handleOpen}>
+        <div>{selectedItem}</div>
+        <ChevronDown className={`w-6 h-6 ${open ? "transform rotate-[180deg]" : ""}`}/>
       </div>
       {open && 
         <div className="absolute transform translate-y-full w-full">

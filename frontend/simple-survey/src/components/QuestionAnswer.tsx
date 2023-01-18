@@ -8,14 +8,16 @@ interface QuestionAnswerProps {
   question: RequestQuestion;
   possibleAnswers: RequestPossibleAnswers[];
   answer: string | number | number[];
-  updateAnswer: (answer: string | number | number[]) => void
+  updateAnswer: (answer: string | number | number[]) => void,
+  disabled?: boolean
 }
 
 const QuestionAnswer: React.FC<QuestionAnswerProps> = ({
   question,
   possibleAnswers,
   answer,
-  updateAnswer
+  updateAnswer,
+  disabled = false
 }) => {
   return (
     <div className="w-full rounded-2xl border p-4 border-[#d6d6d6] relative">
@@ -24,6 +26,7 @@ const QuestionAnswer: React.FC<QuestionAnswerProps> = ({
         <OpenAnswer 
           value={answer as string || ""}
           onChange={updateAnswer}
+          disabled={disabled}
         />
       }
       {question.type === QuestionType.CHECKBOX &&
@@ -31,6 +34,7 @@ const QuestionAnswer: React.FC<QuestionAnswerProps> = ({
           values={answer as number[] || []}
           possibleAnswers={possibleAnswers}
           onChange={updateAnswer}
+          disabled={disabled}
         />
       }
       {question.type === QuestionType.RADIO &&
@@ -38,6 +42,7 @@ const QuestionAnswer: React.FC<QuestionAnswerProps> = ({
           value={answer as number}
           possibleAnswers={possibleAnswers}
           onChange={updateAnswer}
+          disabled={disabled}
         />
       }
     </div>

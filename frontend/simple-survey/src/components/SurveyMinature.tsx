@@ -17,14 +17,14 @@ const SurveyMinature: React.FC<SurveyMinatureProps> = ({
 }) => {
   return (
     <div 
-      className={`flex flex-col justify-between text-body-text bg-primary cursor-pointer p-4 w-56 h-52 rounded-2xl hover:shadow-2xl hover:-translate-y-1 transition-[shadow, transform] duration-300 ${className}`}
+      className={`flex flex-col justify-between text-body-text bg-primary cursor-pointer p-4 w-56 h-52 rounded-2xl hover:shadow-2xl hover:-translate-y-1 transition-[shadow, transform] duration-300 overflow-hidden ${className}`}
       onClick={() => onClick()}
     >
       <div>
         <div className="text-xl font-semibold">
           {title}
         </div>
-        <div className="mt-1">
+        <div className="mt-1 line-clamp-4">
           {description}
         </div>
       </div>
