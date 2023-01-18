@@ -30,28 +30,30 @@ const Sidebar: React.FC<SidebarProps> = ({
   }
 
   return (
-    <div className={`bg-primary text-body-text left-0 top-0 flex flex-col gap-y-16 justify-center items-center h-screen w-64 fixed ${className}`}>
-      <div className="flex flex-col justify-center items-center gap-y-2">
+    <div className={`bg-white shadow-xl left-0 top-0 flex flex-col gap-y-16 justify-center items-center h-screen w-64 fixed pt-32 pb-16 ${className}`}>
+      <div className="flex flex-col justify-center items-center gap-y-1">
         <img src={imgUrl} className="rounded-full" alt="google use avatar"/>
-        <div>
+        <div className="font-semibold">
           {username}
         </div>
-        <div>
+        <div className="text-light-gray opacity-60">
           {email}
         </div>
       </div>
-      <div className="flex flex-col gap-y-4">
-        <Button className="bg-secondary px-4 py-1" onClick={() => navigate("/surveys")}>
-          My Surveys
-        </Button>
-        <Button className="bg-secondary px-4 py-1" onClick={() => navigate("/add-survey")}>
-          + Add New Survey
-        </Button>
-        {isAdmin &&
-        <Button className="bg-secondary px-4 py-1" onClick={() => navigate("/logs")}>
-          Browse Logs
-        </Button>}
-        <Button className="bg-secondary px-4 py-1" onClick={() => logoutUser()}>
+      <div className="h-full flex flex-col justify-between gap-y-4 text-white">
+        <div className="flex flex-col gap-y-4">
+          <Button className="bg-primary px-4 py-1" onClick={() => navigate("/surveys")}>
+            My Surveys
+          </Button>
+          <Button className="bg-primary px-4 py-1" onClick={() => navigate("/add-survey")}>
+            + Add New Survey
+          </Button>
+          {isAdmin &&
+          <Button className="bg-primary px-4 py-1" onClick={() => navigate("/logs")}>
+            Browse Logs
+          </Button>}
+        </div>
+        <Button className="bg-white text-[#000] px-4 py-1" onClick={() => logoutUser()}>
           Log out
         </Button>
       </div>

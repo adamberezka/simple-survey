@@ -12,7 +12,7 @@ const Button: React.FC<ButtonProps> = ({
   onClick
 }) => {
   return (
-    <div onClick={() => onClick()} className={`flex flex-row justify-center items-center rounded-2xl cursor-pointer ${className}`}>
+    <div onClick={() => onClick()} className={`flex flex-row justify-center items-center rounded-xl cursor-pointer ${className}`}>
       {children}
     </div>
   );

@@ -97,13 +97,13 @@ const AddSurvey: React.FC = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Survey title"
-              inputClassName="text-4xl font-bold mb-2 outline-none border-0"
+              inputClassName="text-4xl font-bold mb-2"
             />
             <TextArea 
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Survey description"
-              inputClassName="text-xl font-normal mb-2 outline-none border-0"
+              inputClassName="text-xl font-normal mb-2"
             />
           </div>
           <div>
@@ -150,21 +150,21 @@ const AddSurvey: React.FC = () => {
             </div>
             <div className="w-full flex flex-row justify-center mt-4">
               <div 
-                className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#25ea3f] rounded-2xl text-center w-60 h-8 font-semibold" 
+                className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#11e82d] rounded-2xl text-center w-60 h-8 font-semibold" 
                 onClick={() => addQuestion(QuestionType.OPEN, setQuestionList, questions)}
               >
                 + Add Open Question
               </div>
 
               <div 
-                className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#25ea3f] rounded-2xl text-center w-60 h-8 font-semibold" 
+                className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#11e82d] rounded-2xl text-center w-60 h-8 font-semibold" 
                 onClick={() => addQuestion(QuestionType.CHECKBOX, setQuestionList, questions)}
               >
                 + Add Checkbox Question
               </div>
 
               <div 
-                className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#25ea3f] rounded-2xl text-center w-60 h-8 font-semibold" 
+                className="m-4 flex flex-row justify-center items-center cursor-pointer text-body-text bg-[#11e82d] rounded-2xl text-center w-60 h-8 font-semibold" 
                 onClick={() => addQuestion(QuestionType.RADIO, setQuestionList, questions)}
               >
                 + Add Radio Button Question
