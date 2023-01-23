@@ -134,13 +134,18 @@ const answerSurvey = async (req: Request, res: Response) => {
 }
 
 const getSurveyResults = async (req: Request, res: Response) => {
+  
   try {
     const hash = req.body.hash.split("_");
     const surveyId = decryptSurveyId({ iv: hash[0], content: hash[1] });
-    
+
+    if (surveyId === -1) {
+      return res.status(200).json({ error: "Sorry, survey not found!" });
+    }
+
     const survey = await surveyRepository.findOneBy({ id: surveyId });
 
-    if (!survey?.id) {
+    if (!survey || !survey?.id) {
       return res.status(200).json({ error: "Sorry, survey not found!" });
     }
     

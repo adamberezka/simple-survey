@@ -17,11 +17,15 @@ const encryptSurveyId = (surveyId: number) => {
 }
 
 const decryptSurveyId = (hash: { iv: string, content: string }) => {
-  const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(hash.iv, 'hex'));
-
-  const decryptedData = Buffer.concat([decipher.update(Buffer.from(hash.content, 'hex')), decipher.final()]);
-
-  return Number(decryptedData.toString());
+  try {
+    const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(hash.iv, 'hex'));
+  
+    const decryptedData = Buffer.concat([decipher.update(Buffer.from(hash.content, 'hex')), decipher.final()]);
+  
+    return Number(decryptedData.toString());
+  } catch (error) {
+    return -1;
+  }
 }
 
 export { encryptSurveyId, decryptSurveyId };
