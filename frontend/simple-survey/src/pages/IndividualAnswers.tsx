@@ -97,18 +97,21 @@ const IndividualAnswers: React.FC = () => {
     setPage(page + value);
   }
 
+  console.log(loading, !surveyAnswers, surveyAnswers && !surveyAnswers![page], !surveyTemplate, page);
+  
+
   return (
     <Container>
       <ContainerContent className="px-16">
-        {loading || !surveyAnswers?.length || !surveyAnswers[page] || !surveyTemplate ? 
+        {loading || !surveyAnswers || (totalAnswers && (page + 1 > totalAnswers)) || !surveyTemplate ? 
         (<div className="w-full h-full flex justify-center items-center">
           <div className="flex flex-col justify-center items-center">
             <Loading />
             Loading answers...
           </div>
         </div>) :
-        (error ? 
-        <div>{error}</div> :
+        (error || !surveyAnswers.length? 
+        <div>{error || "This survey has no answers yet!"}</div> :
         <div className="flex flex-col gap-y-6">
           {page !== 0 && <div className="fixed top-1/2 left-[275px] group flex flex-col justify-center items-center cursor-pointer" onClick={() => handlePageChange(-1)}>
             <ArrowLeftIcon className="h-8 w-8"/>
