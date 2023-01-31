@@ -97,9 +97,6 @@ const IndividualAnswers: React.FC = () => {
     setPage(page + value);
   }
 
-  console.log(loading, !surveyAnswers, surveyAnswers && !surveyAnswers![page], !surveyTemplate, page);
-  
-
   return (
     <Container>
       <ContainerContent className="px-16">
