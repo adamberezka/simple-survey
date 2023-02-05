@@ -59,12 +59,13 @@ const BrowseLogs: React.FC = () => {
         if (!logs || !logs.length) {
             return <div className="min-h-full">Sorry, no logs were found :(</div>
         }
-        return logs.map(log => {
-            return <div className="flex flex-row gap-x-1 pr-4">
+        return logs.map((log, index) => {
+            return (
+            <div className="flex flex-row gap-x-1 pr-4" key={index}>
                 <div className="text-[#ffd439]">{new Date(log.timestamp).toLocaleString()} - </div>
                 <div className={log.level === "error" ? "text-[#fd3e3e]" : "text-[#3b59ff]"}>{log.level.toLocaleUpperCase()} - </div>
                 <div>{log.message}</div>
-            </div>
+            </div>)
         })
     }
 

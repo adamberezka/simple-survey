@@ -62,7 +62,9 @@ const createSurvey = async (req: Request, res: Response) => {
 
 const getUserSurveys = async (req: Request, res: Response) => {
   try {
-    let savedSurveys: Survey[] = await surveyRepository.findBy({ownerId: req.body.userId});
+    const userData: { email: string } = jwtDecode(req.body.jwt);
+    const user = await userRepository.findOneBy({email: userData.email});
+    let savedSurveys: Survey[] = await surveyRepository.findBy({ownerId: user?.id});
 
     const surveys = savedSurveys.map((survey: Survey) => {
       const surveyHash: {iv: string, content: string} = encryptSurveyId(survey.id);
@@ -134,8 +136,9 @@ const answerSurvey = async (req: Request, res: Response) => {
 }
 
 const getSurveyResults = async (req: Request, res: Response) => {
-  
   try {
+    const userData: { email: string } = jwtDecode(req.body.jwt);
+    const user = await userRepository.findOneBy({email: userData.email});
     const hash = req.body.hash.split("_");
     const surveyId = decryptSurveyId({ iv: hash[0], content: hash[1] });
 
@@ -149,7 +152,7 @@ const getSurveyResults = async (req: Request, res: Response) => {
       return res.status(200).json({ error: "Sorry, survey not found!" });
     }
     
-    if (survey?.ownerId !== req.body.userId) {
+    if (survey?.ownerId !== user?.id) {
       return res.status(200).json({ error: "Sorry, survey not found!" });
       // return res.status(200).json({ error: "Sorry, only author of this survey can view its results!" });
     }
@@ -202,7 +205,7 @@ const getIndividualSurveyAnswers = async (req: Request, res: Response) => {
     const surveyId = decryptSurveyId({ iv: hash[0], content: hash[1] });
 
     if (req.body.next === 0) {
-      const decodedToken: {email: string} = jwtDecode(req.body.jwt);
+      const decodedToken: { email: string } = jwtDecode(req.body.jwt);
       const survey = await surveyRepository.findOneBy({id: surveyId});
       const user = await userRepository.findOneBy({email: decodedToken.email});
   

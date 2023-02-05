@@ -52,7 +52,7 @@ const SurveyResult: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    getSurveyResults(user.jwt, user.id, match?.params.hash!)
+    getSurveyResults(user.jwt, match?.params.hash!)
     .then(res => {
       if (res.data.error) {
         setError(res.data.error);

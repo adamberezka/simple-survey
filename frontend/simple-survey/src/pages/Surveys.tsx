@@ -26,7 +26,7 @@ const Surveys: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    getUserSurveys(user?.id, user?.jwt)
+    getUserSurveys(user?.jwt)
       .then(res => {
         setUserSurveys([...res.data.surveys]);
         setLoading(false);
